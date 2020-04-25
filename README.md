@@ -1,2 +1,2 @@
-# BNN_GPA
-Predicting GPA Using Backpropagation
+# Backpropagation Artificial Neural Network Predict GPA
+Prediksi IPK menggunakan Algoritma Backpropagation
