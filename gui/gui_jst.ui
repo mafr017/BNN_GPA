@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>857</width>
-    <height>553</height>
+    <width>1063</width>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,13 +54,13 @@
        <cursorShape>ArrowCursor</cursorShape>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(85, 255, 127),</string>
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
       <property name="lineWidth">
        <number>0</number>
       </property>
       <property name="text">
-       <string>Pelatihan Artificial Neural Network Backpropagation</string>
+       <string>Prediksi IPK menggunakan Backpropagation</string>
       </property>
       <property name="textFormat">
        <enum>Qt::PlainText</enum>
@@ -109,7 +109,7 @@
        <item row="0" column="0">
         <widget class="QGroupBox" name="f_pelatihan">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -210,8 +210,11 @@
                   <property name="text">
                    <string>Baca Data</string>
                   </property>
-                  <property name="default">
+                  <property name="checkable">
                    <bool>false</bool>
+                  </property>
+                  <property name="default">
+                   <bool>true</bool>
                   </property>
                   <property name="flat">
                    <bool>false</bool>
@@ -276,6 +279,9 @@
                <layout class="QVBoxLayout" name="verticalLayout_4">
                 <item>
                  <widget class="QLineEdit" name="eTotalDLatih">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="inputMask">
                    <string/>
                   </property>
@@ -367,6 +373,9 @@
                 </item>
                 <item row="0" column="1">
                  <widget class="QLineEdit" name="eNInp">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>18</string>
                   </property>
@@ -380,6 +389,9 @@
                 </item>
                 <item row="1" column="1">
                  <widget class="QLineEdit" name="eNHid">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>15</string>
                   </property>
@@ -393,6 +405,9 @@
                 </item>
                 <item row="2" column="1">
                  <widget class="QLineEdit" name="eNOut">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>1</string>
                   </property>
@@ -430,7 +445,7 @@
                    <string notr="true">background-color: rgb(255, 255, 255),</string>
                   </property>
                   <property name="text">
-                   <string>2000</string>
+                   <string>5</string>
                   </property>
                  </widget>
                 </item>
@@ -452,7 +467,7 @@
                 <string notr="true">background-color: rgb(217, 217, 217),</string>
                </property>
                <property name="title">
-                <string>Iterasi &amp, MSE</string>
+                <string>Iterasi &amp; MSE</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -476,6 +491,9 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="eWaktu">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -499,6 +517,9 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="eMSE">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -532,10 +553,16 @@
           <item row="0" column="1">
            <widget class="QFrame" name="Tabel">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>369</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -574,14 +601,23 @@
                 <property name="bottomMargin">
                  <number>1</number>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>1</number>
-                </property>
-                <property name="verticalSpacing">
+                <property name="spacing">
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
                  <widget class="QTableWidget" name="tbDataLat">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>170</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="autoFillBackground">
                    <bool>true</bool>
                   </property>
@@ -694,7 +730,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Teori Sistem &amp, Sinyal</string>
+                    <string>Teori Sistem &amp; Sinyal</string>
                    </property>
                    <property name="textAlignment">
                     <set>AlignLeading|AlignVCenter</set>
@@ -702,7 +738,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Organisasi &amp, Arsitektur Komputer 1</string>
+                    <string>Organisasi &amp; Arsitektur Komputer 1</string>
                    </property>
                    <property name="textAlignment">
                     <set>AlignLeading|AlignVCenter</set>
@@ -771,8 +807,20 @@
              </item>
              <item row="1" column="0">
               <widget class="QGroupBox" name="BobotHasil">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>150</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="title">
-                <string>Bobot Awal</string>
+                <string>Hasil Bobot Pelatihan</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_2">
                 <property name="leftMargin">
@@ -791,155 +839,13 @@
                  <number>5</number>
                 </property>
                 <property name="verticalSpacing">
-                 <number>2</number>
+                 <number>0</number>
                 </property>
-                <item row="1" column="0">
-                 <widget class="QTableWidget" name="tbBobotV">
-                  <property name="autoFillBackground">
-                   <bool>true</bool>
-                  </property>
-                  <property name="editTriggers">
-                   <set>QAbstractItemView::NoEditTriggers</set>
-                  </property>
-                  <property name="dragDropOverwriteMode">
-                   <bool>false</bool>
-                  </property>
-                  <property name="alternatingRowColors">
-                   <bool>true</bool>
-                  </property>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>30</number>
-                  </attribute>
-                  <attribute name="horizontalHeaderMinimumSectionSize">
-                   <number>25</number>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>v1</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v2</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v3</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v4</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v5</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v6</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v7</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v8</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v9</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v10</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v11</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v12</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v13</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v14</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>v15</string>
-                   </property>
-                   <property name="textAlignment">
-                    <set>AlignLeading|AlignVCenter</set>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
                 <item row="1" column="1">
                  <widget class="QTableWidget" name="tbBobotW">
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>100</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -956,14 +862,165 @@
                    <bool>true</bool>
                   </property>
                   <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>30</number>
+                   <number>60</number>
                   </attribute>
                   <attribute name="horizontalHeaderMinimumSectionSize">
                    <number>25</number>
                   </attribute>
                   <column>
                    <property name="text">
-                    <string>z</string>
+                    <string>Y</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QTableWidget" name="tbBobotV">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>true</bool>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="dragDropOverwriteMode">
+                   <bool>false</bool>
+                  </property>
+                  <property name="alternatingRowColors">
+                   <bool>true</bool>
+                  </property>
+                  <attribute name="horizontalHeaderDefaultSectionSize">
+                   <number>60</number>
+                  </attribute>
+                  <attribute name="horizontalHeaderMinimumSectionSize">
+                   <number>25</number>
+                  </attribute>
+                  <column>
+                   <property name="text">
+                    <string>Z1</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z2</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z3</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z4</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z5</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z6</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z7</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z8</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z9</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z10</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z11</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z12</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z13</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z14</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Z15</string>
+                   </property>
+                   <property name="textAlignment">
+                    <set>AlignLeading|AlignVCenter</set>
                    </property>
                   </column>
                  </widget>
@@ -987,14 +1044,53 @@
              </item>
              <item row="2" column="0">
               <widget class="QGroupBox" name="Grafik">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>100</height>
+                </size>
+               </property>
                <property name="title">
                 <string>Grafik Konvergensi</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_3">
+                <property name="leftMargin">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="gGrafik">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>Grafik</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>false</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -1102,6 +1198,9 @@
                   <property name="text">
                    <string>Baca Data</string>
                   </property>
+                  <property name="default">
+                   <bool>false</bool>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -1143,6 +1242,9 @@
                <layout class="QVBoxLayout" name="verticalLayout_12">
                 <item>
                  <widget class="QLineEdit" name="eTotalDUji">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="inputMask">
                    <string/>
                   </property>
@@ -1178,7 +1280,7 @@
                 <string notr="true">background-color: rgb(217, 217, 217),</string>
                </property>
                <property name="title">
-                <string>Iterasi &amp, MSE</string>
+                <string>Iterasi &amp; MSE</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -1202,6 +1304,9 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="eWaktu_2">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -1225,6 +1330,9 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="eMSE_2">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -1248,6 +1356,9 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="eAkurasi">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(246, 255, 98);</string>
+                  </property>
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -1284,10 +1395,16 @@
           <item row="0" column="1">
            <widget class="QFrame" name="Tabel_2">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>369</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -1317,8 +1434,35 @@
                 <string>Normalisasi Data Uji</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_7">
+                <property name="leftMargin">
+                 <number>1</number>
+                </property>
+                <property name="topMargin">
+                 <number>1</number>
+                </property>
+                <property name="rightMargin">
+                 <number>1</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>1</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QTableWidget" name="tbDataUji">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>170</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="autoFillBackground">
                    <bool>true</bool>
                   </property>
@@ -1427,7 +1571,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Teori Sistem &amp, Sinyal</string>
+                    <string>Teori Sistem &amp; Sinyal</string>
                    </property>
                    <property name="textAlignment">
                     <set>AlignLeading|AlignVCenter</set>
@@ -1435,7 +1579,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Organisasi &amp, Arsitektur Komputer 1</string>
+                    <string>Organisasi &amp; Arsitektur Komputer 1</string>
                    </property>
                    <property name="textAlignment">
                     <set>AlignLeading|AlignVCenter</set>
@@ -1504,10 +1648,37 @@
              </item>
              <item row="1" column="0">
               <widget class="QGroupBox" name="HasilUji">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>150</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="title">
                 <string>Hasil Pengujian</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
+                <property name="leftMargin">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QTableWidget" name="tbHasilUji">
                   <property name="alternatingRowColors">
@@ -1555,12 +1726,48 @@
              </item>
              <item row="2" column="0">
               <widget class="QGroupBox" name="Grafik_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>100</height>
+                </size>
+               </property>
                <property name="title">
                 <string>Grafik Hasil Pengujian</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_5">
+                <property name="leftMargin">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="gGrafik_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>Grafik</string>
                   </property>
@@ -1609,6 +1816,8 @@
   <tabstop>eTotalDLatih</tabstop>
   <tabstop>eNInp</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../../Download/aweu.qrc"/>
+ </resources>
  <connections/>
 </ui>
