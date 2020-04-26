@@ -10,13 +10,13 @@ from JST import *
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar2QT)
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 class FormPrediksiJST(QMainWindow):
 
     #variabel global untuk menentukan jumlah data latih dan jumlah data uji
-    n_datalatih = 100
-    n_datauji = 21
+    n_datalatih = 443
+    n_datauji = 148
 
     #menciptakan objek dari kelas JST
     jst = JaringanSyarafTiruan()
@@ -31,6 +31,7 @@ class FormPrediksiJST(QMainWindow):
         self.pbBaca.clicked.connect(self.BacaData)
         self.pbBaca_2.clicked.connect(self.BacaData_2)
         self.pbBobot.clicked.connect(self.BacaBobot)
+        self.pbPelatihan.clicked.connect(self.ProPelatihan)
     
     #pendefinisian proses mulai normalisasi
     def Pronor(self, data):
@@ -168,6 +169,143 @@ class FormPrediksiJST(QMainWindow):
 
         except:
             print('Terjadi kesalahan pada proses pembacaan data',sys.exc_info())
+
+    #mendifinisikan fungsi untuk menampilkan bobot awal
+    def BacaBobot(self):
+        try:
+            #inisialisasi awal bobot V dan bobot W
+            v = np.array([
+                        [0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3],
+                        [0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3],
+                        [-0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, 0.4, 0.1, 0.2, 0.1, 0.4],
+                        [-0.3, -0.2, -0.3, -0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, -0.3, -0.2, -0.3, -0.2, -0.3],
+                        [0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3, 0.4, -0.3,  -0.2],
+                        [0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1],
+                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2],
+                        [-0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3],
+                        [-0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4],
+                        [0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3],
+                        [-0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2],
+                        [-0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1],
+                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2],
+                        [0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3],
+                        [0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4],
+                        [0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3],
+                        [0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2],
+                        [-0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1],
+                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2]])
+
+            w = np.array([[0.3], [0.2], [-0.3], [-0.4], [0.3], [0.2], [0.1], [-0.2], [0.3], [0.4], [-0.3], [-0.2], [0.1], [0.2], [0.3], [-0.4]])
+            
+            #menentukan jumlah bobot
+            n_bobotv = len(v)
+            n_bobotw = len(w)
+
+            #menampilkan bobot v pada tabel
+            self.tbBobotV.setRowCount(n_bobotv)
+            for i in range(n_bobotv):
+                for j in range(15):
+                    self.tbBobotV.setItem(i,j,QTableWidgetItem(str(v[i,j])))
+
+            #menampilkan bobot w pada tabel
+            self.tbBobotW.setRowCount(n_bobotw)
+            for i in range(n_bobotw):
+                for j in range(1):
+                    self.tbBobotW.setItem(i,j,QTableWidgetItem(str(v[i,j])))
+
+            #menyimpan data bobot ke dalam variabel global
+            self.n_bobotv = n_bobotv
+            self.n_bobotw = n_bobotw
+            self.v = v
+            self.w = w
+
+        except:
+            print('Terjadi kesalahan pada proses pembacaan bobot',sys.exc_info())
+    
+    #mendifinisikan fungsi untuk melakukan proses pelatihan
+    def ProPelatihan(self):
+        try:
+            time_start = time.perf_counter() #memulai waktu proses
+
+            n_input = int(self.eNInp.displayText())
+            n_hidden = int(self.eNHid.displayText())
+            n_output = int(self.eNOut.displayText())
+            alpha = float(self.eAlpha.displayText())
+            min_error = float(self.eMinE.displayText())
+            iterasi = int(self.eIte.displayText())
+
+            input_latih = self.input_latih
+            target_output = self.target_output
+            n_datalatih = self.n_datalatih
+
+            v = self.v
+            w = self.w
+
+            #memetakan data error dan mse
+            error = np.zeros((n_datalatih,1))
+            mse = np.zeros((iterasi,1))
+            
+            jml_iterasi = 0
+
+            #proses pelatihan feedforward dan backpropagation
+            for i in range (iterasi):
+                print ('Iterasi ke-', (i+1))
+                for j in range(n_datalatih):
+                    [z, y] = self.jst.Feedforward(input_latih[j,:], v, w, n_hidden, n_output)
+                    [w, v] = self.jst.Backpropagation(target_output[j], y, input_latih[j,:], alpha, z, w, v)
+                    
+                    error[j,0] = (target_output[j]-y[0,0])**2
+
+                mse[i,0] = round(sum(error[:, 0])/n_datalatih, 7)
+                print (f"MSE : {mse[i,0]:0.7f}")
+
+                if mse[i,0] <= min_error:
+                    jml_iterasi = i+1
+                    break
+                
+                jml_iterasi = i+1
+
+            #menampilkan hasil bobot v dan w ke dalam tabel
+            baris, kolom = v.shape
+            self.tbBobotV.setColumnCount(kolom)
+            self.tbBobotV.setRowCount(baris)
+            for i in range(baris):
+                for j in range(kolom):
+                    self.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i, j], 6))))
+
+            baris, kolom = w.shape
+            self.tbBobotW.setColumnCount(kolom)
+            self.tbBobotW.setRowCount(baris)
+            for i in range(baris):
+                for j in range(kolom):
+                    self.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 6))))
+            
+            #menyimpan data hasil bobot pelatihan ke dalam variabel global
+            self.v = v
+            self.w = w
+
+            #menampilkan grafik konvergensi proses pelatihan
+            fig = plt.Figure(figsize=(5, 5))
+            ax = fig.add_subplot(1,1,1)
+            ax.plot(mse)
+            ax.set_ylabel('MSE')
+            fig.subplots_adjust(left=0.15, bottom=0.2, right=0.98, top=0.9)
+            #fig.tight_layout()
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+
+            plotWidget = FigureCanvas(fig)
+            lay = QtWidgets.QVBoxLayout(self.gGrafik)
+            lay.setContentsMargins(0, 5, 5, 5)
+            lay.addWidget(plotWidget)
+
+            #menampilkan waktu pelatihan dan nilai MSE
+            time_stop = (time.perf_counter() - time_start)
+            self.eWaktu.setText(str(round(time_stop, 3)))
+            self.eMSE.setText(str(mse[jml_iterasi-1, 0]))
+
+        except:
+            print('Terjadi Kesalahan Pada Proses Pelatihan',sys.exc_info())
 
 #menjalankan program
 if __name__=="__main__":
