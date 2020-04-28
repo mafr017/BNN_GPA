@@ -65,7 +65,7 @@ n_hidden  = 15
 n_output  = 1
 alpha     = 0.5
 min_error = 0.0001
-iterasi   = 1
+iterasi   = 200
 
 #import data latih dan data training
 np.set_printoptions(suppress=True, linewidth=np.inf) #agar nilai tidak bernotasi scientific
@@ -186,6 +186,7 @@ for i in range (iterasi):
 #menampilkan grafik konvergensi proses pelatihan
 plt.figure()
 plt.plot(mse[0:jml_iterasi, 0])
+plt.ylim(ymin=0)
 plt.xlabel('Iterasi ke-i, (0 < i < '+str(jml_iterasi)+')')
 plt.ylabel('MSE')
 plt.title('Grafik Konvergensi Proses Pelatihan')
@@ -284,8 +285,9 @@ x = np.array([x_tmp]).transpose()
 
 plt.figure()
 plt.plot(x, y1, 'r', x, y2, 'g')
+plt.ylim(ymin=0)
 plt.xlabel('Data Uji Ke-i, (0 < i < '+str(n_datauji)+')')
 plt.ylabel('Hasil Prediksi')
 plt.title('Grafik Perbandingan Hasil Prediksi JST dan Data Sebenarnya')
 plt.legend(('Hasil Prediksi JST', 'Data Sebenarnya'), loc='upper right')
-#plt.show()
+plt.show()
