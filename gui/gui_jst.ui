@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1063</width>
-    <height>580</height>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -535,6 +535,19 @@
               </widget>
              </item>
              <item>
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QGroupBox" name="TombolGrafik">
                <property name="title">
                 <string/>
@@ -552,19 +565,6 @@
                 </item>
                </layout>
               </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </widget>
@@ -1366,7 +1366,7 @@
                 <item>
                  <widget class="QLabel" name="lAkurasi">
                   <property name="text">
-                   <string>Akurasi (%)</string>
+                   <string>Rata-rata Akurasi (%)</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -1407,6 +1407,25 @@
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox">
+               <property name="title">
+                <string/>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_6">
+                <item>
+                 <widget class="QPushButton" name="pbDetailG_2">
+                  <property name="text">
+                   <string>Detail Grafik</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -1700,7 +1719,13 @@
                 </property>
                 <item row="0" column="0">
                  <widget class="QTableWidget" name="tbHasilUji">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
                   <property name="alternatingRowColors">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sortingEnabled">
                    <bool>true</bool>
                   </property>
                   <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
