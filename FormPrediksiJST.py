@@ -2,7 +2,7 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow, QMessageBox, QTableWidgetItem, QDialog, QFileDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow, QMessageBox, QTableWidgetItem, QDialog, QFileDialog, QMessageBox
 from PyQt5.QtGui import QIcon, QPixmap, QImage
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
@@ -14,9 +14,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 class FormPrediksiJST(QMainWindow):
 
-    #variabel global untuk menentukan jumlah data latih dan jumlah data uji
-    n_datalatih = 443
-    n_datauji = 148
+    #deklarasi variabel global
+    n_datalatih = 0
+    n_datauji = 0
+    staPel = 0
+    mse = []
+    jml_iterasi = 0
 
     #menciptakan objek dari kelas JST
     jst = JaringanSyarafTiruan()
@@ -32,6 +35,7 @@ class FormPrediksiJST(QMainWindow):
         self.pbBaca_2.clicked.connect(self.BacaData_2)
         self.pbBobot.clicked.connect(self.BacaBobot)
         self.pbPelatihan.clicked.connect(self.ProPelatihan)
+        self.pbDetailG.clicked.connect(self.DetailGrafik)
     
     #pendefinisian proses mulai normalisasi
     def Pronor(self, data):
@@ -271,18 +275,14 @@ class FormPrediksiJST(QMainWindow):
             self.tbBobotV.setRowCount(baris)
             for i in range(baris):
                 for j in range(kolom):
-                    self.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i, j], 6))))
+                    self.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i, j], 3))))
 
             baris, kolom = w.shape
             self.tbBobotW.setColumnCount(kolom)
             self.tbBobotW.setRowCount(baris)
             for i in range(baris):
                 for j in range(kolom):
-                    self.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 6))))
-            
-            #menyimpan data hasil bobot pelatihan ke dalam variabel global
-            self.v = v
-            self.w = w
+                    self.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 3))))
 
             #menampilkan grafik konvergensi proses pelatihan
             fig = plt.Figure(figsize=(5, 5))
@@ -290,7 +290,6 @@ class FormPrediksiJST(QMainWindow):
             ax.plot(mse)
             ax.set_ylabel('MSE')
             fig.subplots_adjust(left=0.15, bottom=0.2, right=0.98, top=0.9)
-            #fig.tight_layout()
             fig.canvas.draw()
             fig.canvas.flush_events()
 
@@ -303,9 +302,41 @@ class FormPrediksiJST(QMainWindow):
             time_stop = (time.perf_counter() - time_start)
             self.eWaktu.setText(str(round(time_stop, 3)))
             self.eMSE.setText(str(mse[jml_iterasi-1, 0]))
+            
+            #menyimpan data hasil bobot pelatihan ke dalam variabel global
+            self.v = v
+            self.w = w
+            self.mse = mse
+            self.jml_iterasi = jml_iterasi
+            self.staPel = 1
 
         except:
             print('Terjadi Kesalahan Pada Proses Pelatihan',sys.exc_info())
+    
+    #mendifinisikan fungsi detail grafik
+    def DetailGrafik(self):
+        try:
+            #mengambil variabel global
+            staPel = self.staPel
+            mse = self.mse
+            jml_iterasi = self.jml_iterasi
+
+            if staPel == 0:
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalkan !")
+                msg.setText("Laukan Proses Pelatihan Terlebih Dahulu!")
+                msg.setIcon(QMessageBox.Warning)
+
+                x = msg.exec_()
+            else:
+                plt.figure()
+                plt.plot(mse[0:jml_iterasi, 0])
+                plt.xlabel('Iterasi ke-i, (0 < i < '+str(jml_iterasi)+')')
+                plt.ylabel('MSE')
+                plt.title('Grafik Konvergensi Proses Pelatihan')
+                plt.show()
+        except:
+            print('Terjadi Kesalahan',sys.exc_info())
 
 #menjalankan program
 if __name__=="__main__":
