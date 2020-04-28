@@ -1,4 +1,5 @@
 # Backpropagation Artificial Neural Network Predict GPA
 Prediksi IPK menggunakan Algoritma Backpropagation
----
-pip modules requirement: numpy, PyQt5, pandas
+### Requirements
+* Pyhton version: 3.7.x
+* pip modules: numpy, PyQt5, pandas, matplotlib
