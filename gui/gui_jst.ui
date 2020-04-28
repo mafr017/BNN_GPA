@@ -535,6 +535,25 @@
               </widget>
              </item>
              <item>
+              <widget class="QGroupBox" name="TombolGrafik">
+               <property name="title">
+                <string/>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="QPushButton" name="pbDetailG">
+                  <property name="text">
+                   <string>Detail Grafik</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -1816,8 +1835,6 @@
   <tabstop>eTotalDLatih</tabstop>
   <tabstop>eNInp</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../../Download/aweu.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
