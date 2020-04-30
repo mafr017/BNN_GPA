@@ -5,7 +5,7 @@ Prediksi IPK menggunakan Algoritma Backpropagation
 * Activation Function = Sigmoid
 ### Parameters
 * Neuron Input  = 18
-* Neuron Hidden = 24
+* Neuron Hidden = 36
 * Neuron Output = 1
 * Learning Rate = 0.15
 * Min. Error    = 0.001
