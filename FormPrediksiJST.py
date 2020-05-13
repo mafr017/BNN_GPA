@@ -7,10 +7,13 @@ from PyQt5.QtGui import QIcon, QPixmap, QImage
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
 from JST import *
+
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar2QT)
 from matplotlib.backends.backend_qt5agg import FigureCanvas
+
+import gui.gui_jst_fix_no_bug as guii
 
 class FormPrediksiJST(QMainWindow):
 
@@ -18,6 +21,7 @@ class FormPrediksiJST(QMainWindow):
     n_datalatih = 0
     n_datauji = 0
     staBaPel = 0
+    staBaBot = 0
     staPel = 0
     staBaUji = 0
     staUji = 0
@@ -32,17 +36,19 @@ class FormPrediksiJST(QMainWindow):
     # pendefinisian init self
     def __init__(self):
         QMainWindow.__init__(self)
-        loadUi ("gui\gui_jst_(fix_no_bug).ui", self) # memanggil file gui_jst.ui
+        self.sgui = guii.Ui_MainMenu()
+        self.sgui.setupUi(self)
+        #loadUi ("D:\Learn programs\python\TA\gui\gui_jst_fix_no_bug.ui", self) # memanggil file gui_jst.ui
         self.setWindowTitle("Prediksi IPK Mahasiswa Sistem Komputer S1 - JST BACKPROPAGATION")
 
         # memanggil fungsi-fungsi
-        self.pbBaca.clicked.connect(self.BacaData)
-        self.pbBaca_2.clicked.connect(self.BacaData_2)
-        self.pbBobot.clicked.connect(self.BacaBobot)
-        self.pbPelatihan.clicked.connect(self.ProPelatihan)
-        self.pbDetailG.clicked.connect(self.DetailGrafik)
-        self.pbPengujian.clicked.connect(self.ProPengujian)
-        self.pbDetailG_2.clicked.connect(self.DetailGrafik_2)
+        self.sgui.pbBaca.clicked.connect(self.BacaData)
+        self.sgui.pbBaca_2.clicked.connect(self.BacaData_2)
+        self.sgui.pbBobot.clicked.connect(self.BacaBobot)
+        self.sgui.pbPelatihan.clicked.connect(self.ProPelatihan)
+        self.sgui.pbDetailG.clicked.connect(self.DetailGrafik)
+        self.sgui.pbPengujian.clicked.connect(self.ProPengujian)
+        self.sgui.pbDetailG_2.clicked.connect(self.DetailGrafik_2)
     
     # pendefinisian proses mulai normalisasi
     def Pronor(self, data):
@@ -98,10 +104,10 @@ class FormPrediksiJST(QMainWindow):
     def BacaData(self):
         try:
             # membaca file CSV data input dari penyimpanan lokal
-            path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "CSV files (*.csv)")
+            path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
             namafile = path[0]
             np.set_printoptions(suppress=True, linewidth=np.inf)
-            data_latih = pd.read_csv(namafile, sep=',')
+            data_latih = pd.read_excel(namafile, header=1)
             data_latih = np.array(data_latih) # simpan data kedalam bentuk list/array
 
             # menentukan jumlah data latih
@@ -117,16 +123,16 @@ class FormPrediksiJST(QMainWindow):
             target_output = data_normalisasi[:, 18]
             
             # menampilkan data latih pada tabel
-            self.tbDataLat.setRowCount(n_datalatih)
+            self.sgui.tbDataLat.setRowCount(n_datalatih)
             for i in range(n_datalatih):
-                self.tbDataLat.setItem(i,0,QTableWidgetItem(str(int(data[i,0])))) # membaca parameter NIM
+                self.sgui.tbDataLat.setItem(i,0,QTableWidgetItem(str(int(data[i,0])))) # membaca parameter NIM
                 for j in range(18):
                     k = j + 1
-                    self.tbDataLat.setItem(i,k,QTableWidgetItem(str(input_latih[i,j]))) # membaca paramater input latih x1-x18
-                self.tbDataLat.setItem(i,19,QTableWidgetItem(str(target_output[i]))) # membaca parameter target(IPK)
+                    self.sgui.tbDataLat.setItem(i,k,QTableWidgetItem(str(input_latih[i,j]))) # membaca paramater input latih x1-x18
+                self.sgui.tbDataLat.setItem(i,19,QTableWidgetItem(str(target_output[i]))) # membaca parameter target(IPK)
 
             # menampilkan total data latih
-            self.eTotalDLatih.setText(str(n_datalatih))
+            self.sgui.eTotalDLatih.setText(str(n_datalatih))
 
             # menyimpan data latih ke dalam variabel global
             self.n_datalatih = n_datalatih
@@ -136,7 +142,7 @@ class FormPrediksiJST(QMainWindow):
             self.staBaPel = 1
 
         except:
-            print('Terjadi kesalahan pada proses pembacaan data',sys.exc_info())
+            print('Terjadi kesalahan pada proses pembacaan data {}'.format(sys.exc_info()[-1].tb_lineno))
 
     # mendefinisikan fungsi untuk melakukan pembacaan data uji
     def BacaData_2(self):
@@ -146,10 +152,10 @@ class FormPrediksiJST(QMainWindow):
 
             if staBaPel == 1:
                 # membaca file CSV data input dari penyimpanan lokal
-                path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pengujian', '', "CSV files (*.csv)")
+                path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
                 namafile = path[0]
                 np.set_printoptions(suppress=True, linewidth=np.inf)
-                data_uji = pd.read_csv(namafile, sep=',')
+                data_uji = pd.read_excel(namafile, header=1)
                 data_uji = np.array(data_uji) # simpan data kedalam bentuk list/array
 
                 data = np.concatenate((self.data_latih, data_uji)) # menggabungkan data latih dengan data uji
@@ -166,17 +172,17 @@ class FormPrediksiJST(QMainWindow):
                 output_sebenarnya = datauji_normalisasi[self.n_datalatih:, 18]
                 
                 # menampilkan data uji pada tabel
-                self.tbDataUji.setRowCount(n_datauji)
+                self.sgui.tbDataUji.setRowCount(n_datauji)
 
                 for i in range(n_datauji):
-                    self.tbDataUji.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0])))) # membaca parameter NIM
+                    self.sgui.tbDataUji.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0])))) # membaca parameter NIM
                     for j in range(18):
                         k = j + 1
-                        self.tbDataUji.setItem(i,k,QTableWidgetItem(str(input_uji[i,j]))) # membaca paramater input latih x1-x18
-                    self.tbDataUji.setItem(i,19,QTableWidgetItem(str(output_sebenarnya[i]))) # membaca parameter target(IPK)
+                        self.sgui.tbDataUji.setItem(i,k,QTableWidgetItem(str(input_uji[i,j]))) # membaca paramater input latih x1-x18
+                    self.sgui.tbDataUji.setItem(i,19,QTableWidgetItem(str(output_sebenarnya[i]))) # membaca parameter target(IPK)
 
                 # menampilkan total data latih dan total data uji
-                self.eTotalDUji.setText(str(n_datauji))
+                self.sgui.eTotalDUji.setText(str(n_datauji))
 
                 # menyimpan data latih dan data uji ke dalam variabel global
                 self.data = data
@@ -192,7 +198,7 @@ class FormPrediksiJST(QMainWindow):
                 msg.setWindowTitle("Proses Dibatalkan !")
                 msg.setText("Lakukan Proses Baca Data Pelatihan Terlebih Dahulu!")
                 msg.setIcon(QMessageBox.Warning)
-                x = msg.exec_()
+                msg.exec_()
 
         except:
             print('Terjadi kesalahan pada proses pembacaan data',sys.exc_info())
@@ -201,9 +207,9 @@ class FormPrediksiJST(QMainWindow):
     def BacaBobot(self):
         try:
             # mengambil variabel global
-            n_input = int(self.eNInp.displayText())
-            n_hidden = int(self.eNHid.displayText())
-            n_output = int(self.eNOut.displayText())
+            n_input = int(self.sgui.eNInp.displayText())
+            n_hidden = int(self.sgui.eNHid.displayText())
+            n_output = int(self.sgui.eNOut.displayText())
 
             # inisialisasi awal bobot V dan bobot W
             """ v = np.array([
@@ -236,25 +242,26 @@ class FormPrediksiJST(QMainWindow):
 
             # menampilkan bobot v pada tabel
             baris, kolom = v.shape
-            self.tbBobotV.setColumnCount(kolom)
-            self.tbBobotV.setRowCount(baris)
+            self.sgui.tbBobotV.setColumnCount(kolom)
+            self.sgui.tbBobotV.setRowCount(baris)
             for i in range(baris):
                 for j in range(kolom):
-                    self.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i,j], 4))))
+                    self.sgui.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i,j], 4))))
 
             # menampilkan bobot w pada tabel
             baris, kolom = w.shape
-            self.tbBobotW.setColumnCount(kolom)
-            self.tbBobotW.setRowCount(baris)
+            self.sgui.tbBobotW.setColumnCount(kolom)
+            self.sgui.tbBobotW.setRowCount(baris)
             for i in range(baris):
                 for j in range(kolom):
-                    self.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
+                    self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
 
             # menyimpan data bobot ke dalam variabel global
             self.n_bobotv = n_bobotv
             self.n_bobotw = n_bobotw
             self.v = v
             self.w = w
+            self.staBaBot = 1
 
         except:
             print('Terjadi kesalahan pada proses pembacaan bobot {}'.format(sys.exc_info()[-1].tb_lineno))
@@ -264,17 +271,23 @@ class FormPrediksiJST(QMainWindow):
         try:
             # mengambil variabel global
             staBaPel = self.staBaPel
+            staBaBot = self.staBaBot
 
-            if staBaPel == 1:
+            if staBaPel == 1 and staBaBot == 1:
                 time_start = time.perf_counter() # memulai waktu proses
 
+                msg = QMessageBox()
+                msg.setStyleSheet("QLabel{min-width: 370px;}");
+                msg.setWindowTitle("Proses Pelatihan Sedang Berjalan, Mohon Tunggu Beberapa Menit!")
+                msg.show()
+
                 # mengambil data variabel global
-                n_input = int(self.eNInp.displayText())
-                n_hidden = int(self.eNHid.displayText())
-                n_output = int(self.eNOut.displayText())
-                alpha = float(self.eAlpha.displayText())
-                min_error = float(self.eMinE.displayText())
-                iterasi = int(self.eIte.displayText())
+                n_input = int(self.sgui.eNInp.displayText())
+                n_hidden = int(self.sgui.eNHid.displayText())
+                n_output = int(self.sgui.eNOut.displayText())
+                alpha = float(self.sgui.eAlpha.displayText())
+                min_error = float(self.sgui.eMinE.displayText())
+                iterasi = int(self.sgui.eIte.displayText())
 
                 input_latih = self.input_latih
                 target_output = self.target_output
@@ -309,18 +322,18 @@ class FormPrediksiJST(QMainWindow):
 
                 # menampilkan hasil bobot v dan w ke dalam tabel
                 baris, kolom = v.shape
-                self.tbBobotV.setColumnCount(kolom)
-                self.tbBobotV.setRowCount(baris)
+                self.sgui.tbBobotV.setColumnCount(kolom)
+                self.sgui.tbBobotV.setRowCount(baris)
                 for i in range(baris):
                     for j in range(kolom):
-                        self.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i, j], 3))))
+                        self.sgui.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i, j], 3))))
 
                 baris, kolom = w.shape
-                self.tbBobotW.setColumnCount(kolom)
-                self.tbBobotW.setRowCount(baris)
+                self.sgui.tbBobotW.setColumnCount(kolom)
+                self.sgui.tbBobotW.setRowCount(baris)
                 for i in range(baris):
                     for j in range(kolom):
-                        self.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 3))))
+                        self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 3))))
 
                 """ gunakan gui_jst.ui untuk menggunakan fitur ini tetapi memiliki bug (grafik hanya bisa digunakan satu kali proses)
                 # menampilkan grafik konvergensi proses pelatihan
@@ -339,8 +352,8 @@ class FormPrediksiJST(QMainWindow):
 
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
-                self.eWaktu.setText(str(time_stop))
-                self.eMSE.setText(str(mse[jml_iterasi-1, 0]))
+                self.sgui.eWaktu.setText(str(time_stop))
+                self.sgui.eMSE.setText(str(mse[jml_iterasi-1, 0]))
                 
                 # menyimpan data hasil bobot pelatihan ke dalam variabel global
                 self.v = v
@@ -348,13 +361,17 @@ class FormPrediksiJST(QMainWindow):
                 self.mse = mse
                 self.jml_iterasi = jml_iterasi
                 self.staPel = 1
+                
             else:
                 # menampilkan pesan error
                 msg = QMessageBox()
                 msg.setWindowTitle("Proses Dibatalkan !")
-                msg.setText("Lakukan Proses Baca Data Pelatihan Terlebih Dahulu!")
+                if staBaPel == 1:
+                    msg.setText("Lakukan Proses Baca Bobot Awal Terlebih Dahulu!")
+                else:
+                    msg.setText("Lakukan Proses Baca Data Pelatihan Terlebih Dahulu!")
                 msg.setIcon(QMessageBox.Warning)
-                x = msg.exec_()
+                msg.exec_()
 
         except:
             print('Terjadi Kesalahan Pada Proses Pelatihan {}'.format(sys.exc_info()[-1].tb_lineno))
@@ -398,8 +415,8 @@ class FormPrediksiJST(QMainWindow):
                 time_start = time.perf_counter() # memulai waktu proses
 
                 # mengambil data variabel global
-                n_hidden = int(self.eNHid.displayText())
-                n_output = int(self.eNOut.displayText())
+                n_hidden = int(self.sgui.eNHid.displayText())
+                n_output = int(self.sgui.eNOut.displayText())
 
                 data = self.data
                 data_uji = self.data_uji
@@ -437,7 +454,7 @@ class FormPrediksiJST(QMainWindow):
                     outsebenarnya_denormalisasi[i,0] = self.tra.Denormalisasi(output_sebenarnya[i], datamin, datamax)
 
                 # menampilkan hasil bobot v dan w ke dalam tabel
-                self.tbHasilUji.setRowCount(n_datauji)
+                self.sgui.tbHasilUji.setRowCount(n_datauji)
                 for i in range(n_datauji):
                     hasiljst = hslprediksi_denormalisasi[i,0]
                     datasebenarnya = outsebenarnya_denormalisasi[i,0]
@@ -448,11 +465,11 @@ class FormPrediksiJST(QMainWindow):
                     akurasi = float(akurasi)
 
                     # menampilkan hasil ke dalam tabel
-                    self.tbHasilUji.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0]))))
-                    self.tbHasilUji.setItem(i,1,QTableWidgetItem(str(round(hasiljst, 2))))
-                    self.tbHasilUji.setItem(i,2,QTableWidgetItem(str(round(datasebenarnya, 2))))
-                    self.tbHasilUji.setItem(i,3,QTableWidgetItem(str(errorhasil)))
-                    self.tbHasilUji.setItem(i,4,QTableWidgetItem(str(akurasi)))
+                    self.sgui.tbHasilUji.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0]))))
+                    self.sgui.tbHasilUji.setItem(i,1,QTableWidgetItem(str(round(hasiljst, 2))))
+                    self.sgui.tbHasilUji.setItem(i,2,QTableWidgetItem(str(round(datasebenarnya, 2))))
+                    self.sgui.tbHasilUji.setItem(i,3,QTableWidgetItem(str(errorhasil)))
+                    self.sgui.tbHasilUji.setItem(i,4,QTableWidgetItem(str(akurasi)))
 
                 rata2akurasi = 100 - ((sum(kum_error)/n_datauji) * 100) # menghitung MAPE / akurasi
                 rata2akurasi = float(rata2akurasi[0])
@@ -481,9 +498,9 @@ class FormPrediksiJST(QMainWindow):
 
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
-                self.eWaktu_2.setText(str(round(time_stop, 2)))
-                self.eMSE_2.setText(str(mse))
-                self.eAkurasi.setText(f"{rata2akurasi:0.2f}")
+                self.sgui.eWaktu_2.setText(str(round(time_stop, 2)))
+                self.sgui.eMSE_2.setText(str(mse))
+                self.sgui.eAkurasi.setText(f"{rata2akurasi:0.2f}")
                 
                 # menyimpan data hasil bobot pelatihan ke dalam variabel global
                 self.mseUji = mse
