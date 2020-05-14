@@ -2,10 +2,10 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow, QMessageBox, QTableWidgetItem, QDialog, QFileDialog, QMessageBox
-from PyQt5.QtGui import QIcon, QPixmap, QImage
-from PyQt5.uic import loadUi
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.uic import *
+from PyQt5 import *
 from JST import *
 
 from matplotlib import pyplot as plt
@@ -14,6 +14,12 @@ from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navigati
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 import gui.gui_jst_fix_no_bug as guii
+
+class VLine(QFrame):
+    # a simple VLine, like the one you get from designer
+    def __init__(self):
+        super(VLine, self).__init__()
+        self.setFrameShape(self.VLine|self.Raised)
 
 class FormPrediksiJST(QMainWindow):
 
@@ -40,6 +46,18 @@ class FormPrediksiJST(QMainWindow):
         self.sgui.setupUi(self)
         #loadUi ("D:\Learn programs\python\TA\gui\gui_jst_fix_no_bug.ui", self) # memanggil file gui_jst.ui
         self.setWindowTitle("Prediksi IPK Mahasiswa Sistem Komputer S1 - JST BACKPROPAGATION")
+
+        #setup status bar
+        self.sgui.statusbarr = QStatusBar()
+        self.sgui.progressBar_2 = QProgressBar()
+        self.sgui.progressBar_2.setValue(0)
+        self.sgui.progressBar_2.setFixedSize(150, 21)
+        self.sgui.labelstatus = QLabel()
+        self.sgui.labelstatus.setText("Progres Pelatihan")
+        self.setStatusBar(self.sgui.statusbarr)
+        self.sgui.statusbarr.setStyleSheet('background-color: #FFFFFF;')
+        self.sgui.statusbarr.addWidget(self.sgui.labelstatus)
+        self.sgui.statusbarr.addWidget(self.sgui.progressBar_2)
 
         # memanggil fungsi-fungsi
         self.sgui.pbBaca.clicked.connect(self.BacaData)
@@ -232,8 +250,9 @@ class FormPrediksiJST(QMainWindow):
                         [0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2],
                         [-0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1],
                         [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2]])
-
-            w = np.array([[0.3], [0.2], [-0.3], [-0.4], [0.3], [0.2], [0.1], [-0.2], [0.3], [0.4], [-0.3], [-0.2], [0.1], [0.2], [0.3], [-0.4]]) """
+                
+                w = np.array([[0.3], [0.2], [-0.3], [-0.4], [0.3], [0.2], [0.1], [-0.2], [0.3], [0.4], [-0.3], [-0.2], [0.1], [0.2], [0.3], [-0.4]]) """
+            
             [v, w] = self.pre.Acakbobot(n_input, n_hidden, n_output)
 
             # menentukan jumlah bobot
@@ -301,6 +320,8 @@ class FormPrediksiJST(QMainWindow):
                 mse = np.zeros((iterasi,1))
                 
                 jml_iterasi = 0
+                coomplete = 0
+                self.sgui.progressBar_2.setValue(coomplete)
 
                 # proses pelatihan feedforward dan backpropagation
                 for i in range (iterasi):
@@ -319,6 +340,11 @@ class FormPrediksiJST(QMainWindow):
                         break
                     
                     jml_iterasi = i+1
+                    
+                    coomplete = ((jml_iterasi)/iterasi)*100
+                    if coomplete >= 100:
+                        coomplete = 100
+                    self.sgui.progressBar_2.setValue(coomplete)
 
                 # menampilkan hasil bobot v dan w ke dalam tabel
                 baris, kolom = v.shape
@@ -336,19 +362,19 @@ class FormPrediksiJST(QMainWindow):
                         self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 3))))
 
                 """ gunakan gui_jst.ui untuk menggunakan fitur ini tetapi memiliki bug (grafik hanya bisa digunakan satu kali proses)
-                # menampilkan grafik konvergensi proses pelatihan
-                fig = plt.Figure(figsize=(10, 10))
-                ax = fig.add_subplot(1,1,1)
-                ax.plot(mse)
-                ax.set_ylim(ymin=0)
-                ax.set_ylabel('MSE')
-                fig.subplots_adjust(left=0.18, bottom=0.2, right=0.98, top=0.9)
-                fig.canvas.draw()
-                fig.canvas.flush_events()
+                    # menampilkan grafik konvergensi proses pelatihan
+                    fig = plt.Figure(figsize=(10, 10))
+                    ax = fig.add_subplot(1,1,1)
+                    ax.plot(mse)
+                    ax.set_ylim(ymin=0)
+                    ax.set_ylabel('MSE')
+                    fig.subplots_adjust(left=0.18, bottom=0.2, right=0.98, top=0.9)
+                    fig.canvas.draw()
+                    fig.canvas.flush_events()
 
-                plotWidget = FigureCanvas(fig)
-                lay = QtWidgets.QVBoxLayout(self.gGrafik)
-                lay.addWidget(plotWidget)"""
+                    plotWidget = FigureCanvas(fig)
+                    lay = QtWidgets.QVBoxLayout(self.gGrafik)
+                    lay.addWidget(plotWidget)"""
 
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
