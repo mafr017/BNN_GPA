@@ -16,7 +16,7 @@ class DPreparation:
 
             '''bias diberi niali 0,1'''
             bobot_v[0, :]=0.1
-            bobot_w[0, :]=0.1
+            bobot_w[0, :]=0.1 
 
             '''memindahkan array nilai random dari temp ke array bobot'''
             bobot_v[1:n_input+1, :] = tmp_v
