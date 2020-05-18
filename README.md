@@ -13,7 +13,7 @@ Prediksi IPK menggunakan Algoritma Backpropagation
 ### Requirements
 * Python version: 3.7.x
 * pip modules: numpy, PyQt5, pandas, matplotlib, MySQL
-### Build Tools
+### Developtment Tools
 * Visual Studio Code
 * Qt Designer
 * XAMPP
