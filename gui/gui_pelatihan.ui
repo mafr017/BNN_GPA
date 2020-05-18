@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1069</width>
-    <height>645</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1237,6 +1237,9 @@
                   <property name="text">
                    <string>24</string>
                   </property>
+                  <property name="maxLength">
+                   <number>3</number>
+                  </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
@@ -1297,6 +1300,9 @@
                   </property>
                   <property name="text">
                    <string>200</string>
+                  </property>
+                  <property name="maxLength">
+                   <number>4</number>
                   </property>
                  </widget>
                 </item>
