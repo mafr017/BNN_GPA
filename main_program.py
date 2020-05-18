@@ -2,6 +2,9 @@ import sys
 import time
 import numpy as np
 import pandas as pd
+import random
+import string
+import mysql.connector as mycon
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -14,6 +17,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar2QT)
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
+from mysql.connector import *
+
 import gui.gui_about as gui_about
 import gui.gui_kelola as gui_kelola 
 import gui.gui_login as gui_login
@@ -24,13 +29,42 @@ import gui.gui_petunjuk as gui_petunjuk
 import gui.gui_prediksi as gui_prediksi
 import gui.gui_register as gui_register
 
-class FormMain(QMainWindow):
+class kontrolDB:
+    def __init__(self):
+        self.konek()
 
+    def konek(self):
+        try:
+            madb = mycon.connect(host="localhost", user="root", password="", database="gpa_bnn")
+            self.madb = madb
+            if madb.is_connected():
+                db_info = madb.get_server_info()
+                self.statSer = f"Connected to Server MySQL v.{db_info}"
+        except Error as error:
+            self.statSer = f"Failed Connect to Server MySQL error({error})"
+
+class FormMain(QMainWindow):
+    
     def __init__(self):
         QMainWindow.__init__(self)
+
+        #membuat window form
         self.sgui = gui_main.Ui_MainWindow()
         self.sgui.setupUi(self)
 
+        kontrolDB.konek(self) #panggil fungsi koneksi server
+
+        #setup status bar
+        self.sgui.statusbarr = QStatusBar()
+        self.setStatusBar(self.sgui.statusbarr)
+        self.sgui.statusbarr.setStyleSheet('background-color: #FFFFFF;')
+
+        self.sgui.lstatus = QLabel()
+        self.sgui.lstatus.setText(self.statSer)
+        
+        self.sgui.statusbarr.addWidget(self.sgui.lstatus)
+
+        #mendefinisikan fungsi pada
         self.sgui.pbAboutMe.clicked.connect(self.tampilAbout)
         self.sgui.pbPetunjuk.clicked.connect(self.tampilPetunjuk)
         self.sgui.pbLogin.clicked.connect(self.tampilLogin)
@@ -63,6 +97,8 @@ class FormLogin(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_login.Ui_MainWindow()
         self.sgui.setupUi(self)
+        
+        kontrolDB.konek(self)
 
         self.sgui.pbLogin.clicked.connect(self.Login)
         self.sgui.pbLupa.clicked.connect(self.tampilLupa)
@@ -71,13 +107,31 @@ class FormLogin(QMainWindow):
         self.show()
     
     def Login(self):
-        msg = QMessageBox()
-        msg.setWindowTitle("Login Berhasil!")
-        msg.setText("Login Berhasil!")
-        msg.setIcon(QMessageBox.Information)
-        msg.exec_()
-        self.tampilForm = FormPelatihanJST()
-        self.close()
+        idAdmin = str(self.sgui.leId.displayText())
+        passAdmin = str(self.sgui.lePass.text())
+        cur = self.madb.cursor()
+        cur.execute("SELECT id, password FROM tb_admin WHERE id = %s AND password = %s",(idAdmin, passAdmin,))
+        idd = cur.fetchall()
+        idds = len(idd)
+        cur.close()
+        if idds > 0:
+            print("berhasil login")
+            msg = QMessageBox()
+            msg.setWindowTitle("Login Berhasil!")
+            msg.setText("Login Berhasil!")
+            msg.setIcon(QMessageBox.Information)
+            msg.exec_()
+            self.tampilForm = FormPelatihanJST()
+            self.close()
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("Login Gagal!")
+            msg.setText("Id atau Password Salah!")
+            msg.setIcon(QMessageBox.Information)
+            msg.exec_()
+            self.sgui.leId.setText("")
+            self.sgui.lePass.setText("")
+            print("gagal login")
 
     def tampilRegister(self):
         self.tampilForm = FormRegister()
@@ -125,13 +179,63 @@ class FormRegister(QMainWindow):
         self.show()
 
     def Registerr(self):
-        msg = QMessageBox()
-        msg.setWindowTitle("Regristrasi Berhasil!")
-        msg.setText("Proses Regristrasi Berhasil, silahkan login!")
-        msg.setIcon(QMessageBox.Information)
-        msg.exec_()
-        self.tampilForm = FormLogin()
-        self.close()
+        statada = ""
+
+        leuniqe = str(self.sgui.leNama_2.displayText())
+        lenama = str(self.sgui.leNama.displayText())
+        leemail = str(self.sgui.leEmail.displayText())
+        leid = str(self.sgui.leId.displayText())
+
+        if leuniqe == "ini4dm1n":
+            print("Uniqe Key sudah dipakai bois")
+            statada += "Uniqe Key, " 
+            stata = 1
+        else:
+            stata = 0
+
+        if lenama == "admin":
+            print("Nama sudah dipakai bois")
+            statada += "Nama, " 
+            statb = 1
+        else:
+            statb = 0
+
+        if leemail == "email@email.com":
+            print("Email sudah dipakai bois")
+            statada += "E-mail, " 
+            statc = 1
+        else:
+            statc = 0
+
+        if leid == "771100":
+            print("Id sudah dipakai bois")
+            statada += "Id, " 
+            statd = 1
+        else:
+            statd = 0
+
+        if stata == 1 or statb == 1 or statc == 1 or statd == 1 :
+            print()
+            print("Registrasi Gagal!")
+            print(f"{statada}Sudah Dipakai!")
+            msg = QMessageBox()
+            msg.setWindowTitle("Registrasi Gagal!")
+            msg.setText(f"{statada}Sudah Dipakai!")
+            msg.setIcon(QMessageBox.Critical)
+            msg.exec_()
+            self.sgui.leNama_2.setText("")
+            self.sgui.leNama.setText("")
+            self.sgui.leEmail.setText("")
+            self.sgui.leId.setText("")
+            self.sgui.lePass.setText("")
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("Registrasi Berhasil!")
+            msg.setText("Proses Regitrasi Berhasil, Silahkan Login!")
+            msg.setIcon(QMessageBox.Information)
+            msg.exec_()
+            self.tampilForm = FormLogin()
+            self.close()
 
     def Kembali(self):
         self.tampilForm = FormMain()
@@ -150,7 +254,7 @@ class FormAbout(QMainWindow):
     def keluar(self):
         self.close()
 
-class FormPetunjuk(QMainWindow):
+class FormPetunjuk(FormMain, QMainWindow):
 
     def __init__(self, petunjuk):
         QMainWindow.__init__(self)
@@ -158,7 +262,7 @@ class FormPetunjuk(QMainWindow):
         self.sgui.setupUi(self)
 
         if petunjuk == 1:
-            self.sgui.Judul.setText("Petunjuk Penggunaan Prediksi")
+            self.sgui.Judul.setText(f"Petunjuk Penggunaan Prediksi")
 
         self.sgui.pbOk.clicked.connect(self.keluar)
         self.show()
@@ -191,6 +295,8 @@ class FormPelatihanJST(QMainWindow):
         self.sgui.setupUi(self)
         #loadUi ("D:\Learn programs\python\TA\gui\gui_jst_fix_no_bug.ui", self) # memanggil file gui_jst.ui
         self.setWindowTitle("Prediksi IPK Mahasiswa Sistem Komputer S1 - JST BACKPROPAGATION")
+        
+        kontrolDB.konek(self)
 
         #setup status bar
         self.sgui.statusbarr = QStatusBar()
@@ -203,9 +309,13 @@ class FormPelatihanJST(QMainWindow):
 
         self.sgui.lstatus = QLabel()
         self.sgui.lstatus.setText("Progres Pelatihan")
+
+        self.sgui.lstatko = QLabel()
+        self.sgui.lstatko.setText(self.statSer)
         
         self.sgui.statusbarr.addWidget(self.sgui.lstatus)
         self.sgui.statusbarr.addWidget(self.sgui.progressBar_2)
+        self.sgui.statusbarr.addWidget(self.sgui.lstatko)
 
         # memanggil fungsi-fungsi
         self.sgui.pbBaca.clicked.connect(self.BacaData)
@@ -367,7 +477,7 @@ class FormPelatihanJST(QMainWindow):
                 # menampilkan pesan error
                 msg = QMessageBox()
                 msg.setWindowTitle("Proses Dibatalkan !")
-                msg.setText("Lakukan Proses Baca Data Pelatihan Terlebih Dahulu!")
+                msg.setText("Lakukan Proses Pelatihan Terlebih Dahulu!")
                 msg.setIcon(QMessageBox.Warning)
                 msg.exec_()
 
@@ -746,14 +856,32 @@ class FormPelatihanJST(QMainWindow):
         self.tampilForm = FormKelola()
         self.close()
     
+    def get_random_alphaNumeric_string(self, stringLength):
+        lettersAndDigits = string.ascii_letters + string.digits
+        return ''.join((random.choice(lettersAndDigits) for i in range(stringLength)))
+    
     def TambahAdmin(self):
-        uniqeKey = "asdjlk%*&saedlkjwqe"
+        cur = self.madb.cursor()
+        i = 0
+        while i < 100:
+            uniqeKey = self.get_random_alphaNumeric_string(8)
+            cur.execute("SELECT uniqe_key FROM tb_uniqekey WHERE uniqe_key = %s",(uniqeKey,))
+            idd = cur.fetchall()
+            idds = len(idd)
+            if idds == 0:
+                cur.execute("INSERT INTO tb_uniqekey (uniqe_key) VALUES (%s)",(uniqeKey,))
+                self.madb.commit()
+                print(uniqeKey)
+                break
+            i += 1
+
+        unikKey = uniqeKey
         msg = QMessageBox()
         mafont = QtGui.QFont()
         mafont.setBold(True)
         msg.setWindowTitle("Berhasil Menambah Admin!")
-        msg.setText(f"<html><head/><body><p>Berhasil meng-generate Uniqe Key</p><p>Silahkan catat atau copy kode berikut: <span style=\" font-size:8pt; font-weight:600;\">{uniqeKey}</span></p></body></html>")
-        msg.setDetailedText(f"{uniqeKey}")
+        msg.setText(f"<html><head/><body><p>Berhasil meng-generate Uniqe Key</p><p>Silahkan catat atau copy kode berikut: <span style=\" font-size:8pt; font-weight:600;\">{unikKey}</span></p></body></html>")
+        msg.setDetailedText(f"{unikKey}")
         msg.setIcon(QMessageBox.Information)
         msg.exec_()
 
