@@ -103,6 +103,7 @@ class FormLogin(QMainWindow):
         self.sgui.pbLogin.clicked.connect(self.Login)
         self.sgui.pbLupa.clicked.connect(self.tampilLupa)
         self.sgui.pbRegister.clicked.connect(self.tampilRegister)
+        self.sgui.pbPetunjuk.clicked.connect(self.tampilPetunjuk)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
         self.show()
     
@@ -110,18 +111,20 @@ class FormLogin(QMainWindow):
         idAdmin = str(self.sgui.leId.displayText())
         passAdmin = str(self.sgui.lePass.text())
         cur = self.madb.cursor()
-        cur.execute("SELECT id, password FROM tb_admin WHERE id = %s AND password = %s",(idAdmin, passAdmin,))
+        cur.execute("SELECT id, password, nama FROM tb_admin WHERE id = %s AND password = %s",(idAdmin, passAdmin,))
         idd = cur.fetchall()
         idds = len(idd)
         cur.close()
         if idds > 0:
             print("berhasil login")
+            for row in idd:
+                namaAdmin = row[2]
             msg = QMessageBox()
             msg.setWindowTitle("Login Berhasil!")
             msg.setText("Login Berhasil!")
             msg.setIcon(QMessageBox.Information)
             msg.exec_()
-            self.tampilForm = FormPelatihanJST()
+            self.tampilForm = FormPelatihanJST(namaAdmin)
             self.close()
         else:
             msg = QMessageBox()
@@ -141,6 +144,10 @@ class FormLogin(QMainWindow):
         self.tampilForm = FormLupa()
         self.close()
     
+    def tampilPetunjuk(self):
+        petunjuk = 2
+        self.tampilForm = FormPetunjuk(petunjuk)
+
     def Kembali(self):
         self.tampilForm = FormMain()
         self.close()
@@ -174,53 +181,82 @@ class FormRegister(QMainWindow):
         self.sgui = gui_register.Ui_MainWindow()
         self.sgui.setupUi(self)
 
+        kontrolDB.konek(self)
+
         self.sgui.pbRegister.clicked.connect(self.Registerr)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
         self.show()
 
     def Registerr(self):
         statada = ""
+        stattoken = ""
+        cur = self.madb.cursor()
 
         leuniqe = str(self.sgui.leNama_2.displayText())
         lenama = str(self.sgui.leNama.displayText())
         leemail = str(self.sgui.leEmail.displayText())
         leid = str(self.sgui.leId.displayText())
+        lepass = str(self.sgui.lePass.text())
 
-        if leuniqe == "ini4dm1n":
-            print("Uniqe Key sudah dipakai bois")
+        cuniqe = cur.execute("SELECT uniqe_key FROM tb_admin WHERE uniqe_key = %s",(leuniqe,))
+        ccuniqe = cur.fetchall()
+        ccuniqe = len(ccuniqe)
+        
+        cuniqe2 = cur.execute("SELECT uniqe_key FROM tb_uniqekey WHERE uniqe_key = %s",(leuniqe,))
+        ccuniqe2 = cur.fetchall()
+        ccuniqe2 = len(ccuniqe2)
+        if ccuniqe > 0:
+            print("Uniqe Key sudah dipakai")
             statada += "Uniqe Key, " 
             stata = 1
+        elif ccuniqe2 < 1:
+            print("Token Uniqe Key Tidak Ada")
+            stattoken += "Token Uniqe Key Tidak Ada!" 
+            stata = 2
         else:
             stata = 0
 
-        if lenama == "admin":
-            print("Nama sudah dipakai bois")
+        cnama = cur.execute("SELECT nama FROM tb_admin WHERE nama = %s",(lenama,))
+        ccnama = cur.fetchall()
+        ccnama = len(ccnama)
+        if ccnama > 0:
+            print("Nama sudah dipakai")
             statada += "Nama, " 
             statb = 1
         else:
             statb = 0
 
-        if leemail == "email@email.com":
-            print("Email sudah dipakai bois")
+        cemail = cur.execute("SELECT email FROM tb_admin WHERE email = %s",(leemail,))
+        ccemail = cur.fetchall()
+        ccemail = len(ccemail)
+        if ccemail > 0:
+            print("Email sudah dipakai")
             statada += "E-mail, " 
             statc = 1
         else:
             statc = 0
 
-        if leid == "771100":
-            print("Id sudah dipakai bois")
+        cid = cur.execute("SELECT id FROM tb_admin WHERE id = %s",(leid,))
+        ccid = cur.fetchall()
+        ccid = len(ccid)
+        if ccid > 0:
+            print("Id sudah dipakai")
             statada += "Id, " 
             statd = 1
         else:
             statd = 0
 
-        if stata == 1 or statb == 1 or statc == 1 or statd == 1 :
+        if stata == 1 or statb == 1 or statc == 1 or statd == 1 or stata == 2:
             print()
             print("Registrasi Gagal!")
-            print(f"{statada}Sudah Dipakai!")
             msg = QMessageBox()
             msg.setWindowTitle("Registrasi Gagal!")
-            msg.setText(f"{statada}Sudah Dipakai!")
+            if stata == 2 and (statb == 0 and statc == 0 and statd == 0):
+                msg.setText(f"{stattoken}")
+            elif stata == 2 and (statb == 1 or statc == 1 or statd == 1):
+                msg.setText(f"{statada}Sudah Dipakai! & {stattoken}")
+            else:
+                msg.setText(f"{statada}Sudah Dipakai!")
             msg.setIcon(QMessageBox.Critical)
             msg.exec_()
             self.sgui.leNama_2.setText("")
@@ -234,6 +270,10 @@ class FormRegister(QMainWindow):
             msg.setText("Proses Regitrasi Berhasil, Silahkan Login!")
             msg.setIcon(QMessageBox.Information)
             msg.exec_()
+            cur.execute("UPDATE tb_uniqekey SET id = %s WHERE uniqe_key = %s",(leid, leuniqe,))
+            self.madb.commit()
+            cur.execute("INSERT INTO tb_admin (uniqe_key, id, nama, email, password) VALUES (%s, %s, %s, %s, %s)",(leuniqe, leid, lenama, leemail, lepass,))
+            self.madb.commit()
             self.tampilForm = FormLogin()
             self.close()
 
@@ -263,6 +303,10 @@ class FormPetunjuk(FormMain, QMainWindow):
 
         if petunjuk == 1:
             self.sgui.Judul.setText(f"Petunjuk Penggunaan Prediksi")
+        elif petunjuk == 2:
+            self.sgui.Judul.setText(f"Petunjuk Admin Penggunaan Pelatihan")
+        else:
+            print("Terjadi Kesalahan")
 
         self.sgui.pbOk.clicked.connect(self.keluar)
         self.show()
@@ -289,7 +333,7 @@ class FormPelatihanJST(QMainWindow):
     tra = DTransformation()
 
     # pendefinisian init self
-    def __init__(self):
+    def __init__(self, namaAdmin):
         QMainWindow.__init__(self)
         self.sgui = gui_pelatihan.Ui_MainMenu()
         self.sgui.setupUi(self)
@@ -316,6 +360,7 @@ class FormPelatihanJST(QMainWindow):
         self.sgui.statusbarr.addWidget(self.sgui.lstatus)
         self.sgui.statusbarr.addWidget(self.sgui.progressBar_2)
         self.sgui.statusbarr.addWidget(self.sgui.lstatko)
+        self.sgui.lAdmin.setText(namaAdmin)
 
         # memanggil fungsi-fungsi
         self.sgui.pbBaca.clicked.connect(self.BacaData)
