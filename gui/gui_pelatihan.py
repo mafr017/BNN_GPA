@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainMenu(object):
     def setupUi(self, MainMenu):
         MainMenu.setObjectName("MainMenu")
-        MainMenu.resize(1069, 645)
+        MainMenu.resize(1069, 627)
         MainMenu.setLayoutDirection(QtCore.Qt.LeftToRight)
         MainMenu.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainMenu)
@@ -444,6 +444,7 @@ class Ui_MainMenu(object):
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.eNInp)
         self.eNHid = QtWidgets.QLineEdit(self.Parameter)
         self.eNHid.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.eNHid.setMaxLength(3)
         self.eNHid.setAlignment(QtCore.Qt.AlignCenter)
         self.eNHid.setReadOnly(False)
         self.eNHid.setObjectName("eNHid")
@@ -464,6 +465,7 @@ class Ui_MainMenu(object):
         self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.eMinE)
         self.eIte = QtWidgets.QLineEdit(self.Parameter)
         self.eIte.setStyleSheet("background-color: rgb(255, 255, 255),")
+        self.eIte.setMaxLength(4)
         self.eIte.setObjectName("eIte")
         self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.eIte)
         self.verticalLayout_2.addWidget(self.Parameter)
