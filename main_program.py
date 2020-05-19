@@ -361,10 +361,15 @@ class FormPelatihanJST(QMainWindow):
         self.sgui.statusbarr.addWidget(self.sgui.progressBar_2)
         self.sgui.statusbarr.addWidget(self.sgui.lstatko)
         self.sgui.lAdmin.setText(namaAdmin)
+        self.adminnama= namaAdmin
 
         # memanggil fungsi-fungsi
-        self.sgui.pbBaca.clicked.connect(self.BacaData)
-        self.sgui.pbBaca_2.clicked.connect(self.BacaData_2)
+        self.BacaData()
+        self.BacaData_2()
+        #self.sgui.pbBaca.clicked.connect(self.BacaData_2)
+        self.sgui.pbBaca.setHidden(True)
+        #self.sgui.pbBaca_2.clicked.connect(self.BacaData_2)
+        self.sgui.pbBaca_2.setHidden(True)
         self.sgui.pbBobot.clicked.connect(self.BacaBobot)
         self.sgui.pbPelatihan.clicked.connect(self.ProPelatihan)
         self.sgui.pbDetailG.clicked.connect(self.DetailGrafik)
@@ -374,6 +379,76 @@ class FormPelatihanJST(QMainWindow):
         #self.sgui.pbCetak.clicked.connect(self.Cetak)
         self.sgui.pbTambah.clicked.connect(self.TambahAdmin)
         self.sgui.pbLogout.clicked.connect(self.LogOut)
+
+        # menampilkan bias & bobot terakhir
+        cur = self.madb.cursor()
+        cur.execute("SELECT n1 FROM tb_bobotv")
+        biasv = cur.fetchall()
+        lbiasv = len(biasv)
+        cur.execute("SELECT n1 FROM tb_bobotw")
+        biasw = cur.fetchall()
+        lbiasw = len(biasw)
+        if lbiasv == 0 and lbiasw == 0 :
+            biasv = ""
+            print("Bobot Kosong")
+        else:
+            biasv = str(biasv[0][0])
+            biasw = str(biasw[0][0])
+
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur.execute("SELECT * FROM tb_bobotv")
+            aldatv = cur.fetchall()
+            v = np.array(aldatv)
+            cur.execute("SELECT * FROM tb_bobotw")
+            aldatw = cur.fetchall()
+            w = np.array(aldatw)
+
+            # menampilkan bobot v pada tabel
+            baris, kolom = v.shape
+            self.sgui.tbBobotV.setColumnCount(kolom)
+            self.sgui.tbBobotV.setRowCount(baris)
+            for i in range(baris):
+                for j in range(kolom):
+                    self.sgui.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i,j], 4))))
+
+            # menampilkan bobot w pada tabel
+            baris, kolom = w.shape
+            self.sgui.tbBobotW.setColumnCount(kolom)
+            self.sgui.tbBobotW.setRowCount(baris)
+            for i in range(baris):
+                for j in range(kolom):
+                    self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
+
+            # menyimpan data bobot ke dalam variabel global
+            self.v = v
+            self.w = w
+            self.staBaBot = 1
+
+            cur.execute("SELECT * FROM tb_params")
+            alda = cur.fetchall()
+            qninput = alda[0][1]
+            self.sgui.eNInp.setText(str(qninput))
+            qnhidden = alda[0][2]
+            self.sgui.eNHid.setText(str(qnhidden))
+            qnoutput = alda[0][3]
+            self.sgui.eNOut.setText(str(qnoutput))
+            qalpha = alda[0][4]
+            self.sgui.eAlpha.setText(str(qalpha))
+            qminerr = alda[0][5]
+            self.sgui.eMinE.setText(str(qminerr))
+            qiterasi = alda[0][6]
+            self.sgui.eIte.setText(str(qiterasi))
+            cur.execute("SELECT mse FROM tb_mse")
+            alda = cur.fetchall()
+            itra = qiterasi - 1
+            qmse = alda[itra][0]
+            self.sgui.eMSE.setText(str(qmse))
+
+            if biasv == 0.1 and biasw == 0.1 :
+                self.sgui.BobotHasil.setTitle("Bias dan Bobot Awal")
+            else:
+                self.staPel = 1
+                self.sgui.BobotHasil.setTitle("Bias dan Bobot Hasil")
         self.show()
     
     # pendefinisian proses mulai normalisasi
@@ -429,12 +504,19 @@ class FormPelatihanJST(QMainWindow):
     # mendefinisikan fungsi untuk melakukan pembacaan data latih
     def BacaData(self):
         try:
-            # membaca file CSV data input dari penyimpanan lokal
+            # membaca data pelatihan dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_latih")
+            alda = cur.fetchall()
+
+            """ # membaca file CSV data input dari penyimpanan lokal
             path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
             namafile = path[0]
             np.set_printoptions(suppress=True, linewidth=np.inf)
-            data_latih = pd.read_excel(namafile, header=1)
-            data_latih = np.array(data_latih) # simpan data kedalam bentuk list/array
+            alda = pd.read_excel(namafile, header=1) """
+            
+            data_latih = np.array(alda) # simpan data kedalam bentuk list/array
 
             # menentukan jumlah data latih
             total_data  = len(data_latih)
@@ -477,12 +559,20 @@ class FormPelatihanJST(QMainWindow):
             staBaPel = self.staBaPel
 
             if staBaPel == 1:
-                # membaca file CSV data input dari penyimpanan lokal
+                # membaca data pelatihan dari database
+                np.set_printoptions(suppress=True, linewidth=np.inf)
+                cur = self.madb.cursor()
+                cur.execute("SELECT * FROM data_uji")
+                alda = cur.fetchall()
+                
+                """ # membaca file CSV data input dari penyimpanan lokal
                 path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
                 namafile = path[0]
                 np.set_printoptions(suppress=True, linewidth=np.inf)
-                data_uji = pd.read_excel(namafile, header=1)
-                data_uji = np.array(data_uji) # simpan data kedalam bentuk list/array
+                data_uji = pd.read_excel(namafile, header=1) """
+
+                # simpan data kedalam bentuk list/array
+                data_uji = np.array(alda)
 
                 data = np.concatenate((self.data_latih, data_uji)) # menggabungkan data latih dengan data uji
 
@@ -537,58 +627,89 @@ class FormPelatihanJST(QMainWindow):
             n_hidden = int(self.sgui.eNHid.displayText())
             n_output = int(self.sgui.eNOut.displayText())
 
-            # inisialisasi awal bobot V dan bobot W
-            """ v = np.array([
-                        [0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3],
-                        [0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3],
-                        [-0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, 0.4, 0.1, 0.2, 0.1, 0.4],
-                        [-0.3, -0.2, -0.3, -0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, -0.3, -0.2, -0.3, -0.2, -0.3],
-                        [0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, -0.3, -0.2, -0.1, 0.2, 0.3, 0.4, -0.3,  -0.2],
-                        [0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1],
-                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2],
-                        [-0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3],
-                        [-0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4],
-                        [0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3],
-                        [-0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2, -0.1, -0.2, -0.3, -0.4, -0.3, -0.2],
-                        [-0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1],
-                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2],
-                        [0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3],
-                        [0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4, 0.3, 0.4, 0.1, 0.2, 0.1, 0.4],
-                        [0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3],
-                        [0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2],
-                        [-0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1, -0.2, -0.1, -0.4, -0.3, -0.4, -0.1],
-                        [0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2, 0.3, 0.2]])
-                
-                w = np.array([[0.3], [0.2], [-0.3], [-0.4], [0.3], [0.2], [0.1], [-0.2], [0.3], [0.4], [-0.3], [-0.2], [0.1], [0.2], [0.3], [-0.4]]) """
-            
-            [v, w] = self.pre.Acakbobot(n_input, n_hidden, n_output)
+            if n_hidden < 1:
+                print("Error Tidak Bisa Generate Bobot & Bias!")
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Generate Bias & Bobot Awal Dibatalkan!")
+                msg.setText("Error Tidak Bisa Generate Bobot & Bias Awal!")
+                msg.setIcon(QMessageBox.Warning)
+                x = msg.exec_()
+            else:
+                # inisialisasi awal bobot V dan bobot W              
+                [v, w] = self.pre.Acakbobot(n_input, n_hidden, n_output)
+                vlist = v.tolist()
+                wlist = w.tolist()
 
-            # menentukan jumlah bobot
-            n_bobotv = len(v)
-            n_bobotw = len(w)
+                cur = self.madb.cursor()
+                if n_hidden > 1 :
+                    cur.execute("DROP TABLE tb_bobotv")
+                    cur.execute("TRUNCATE TABLE tb_bobotw")
+                    incol = "n1"
+                    crecol = "n1 FLOAT NOT NULL"
+                    inval = "%s"
+                    for i in range(1, n_hidden):
+                        i = i+1
+                        colu = f", n{i}"
+                        colval = ", %s"
+                        colcre = f", n{i} FLOAT NOT NULL"
+                        incol += colu
+                        inval += colval
+                        crecol += colcre
+                    cur.execute(f"CREATE TABLE tb_bobotv ({crecol})")
+                    sql = f"INSERT INTO tb_bobotv ({incol}) VALUES ({inval})"
+                    cur.executemany(sql, vlist)
+                    self.madb.commit()
+                    sql = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
+                    cur.executemany(sql, wlist)
+                    self.madb.commit()
+                    print("sukses")
+                    self.sgui.BobotHasil.setTitle("Bias dan Bobot Awal")
+                elif n_hidden == 1:
+                    cur.execute("DROP TABLE tb_bobotv")
+                    cur.execute("TRUNCATE TABLE tb_bobotw")
+                    incol = "n1"
+                    crecol = "n1 FLOAT NOT NULL"
+                    inval = f"%s"
+                    print(incol,"\n")
+                    print(inval,"\n")
+                    print(crecol,"\n")
+                    cur.execute(f"CREATE TABLE tb_bobotv ({crecol})")
+                    sqll = f"INSERT INTO tb_bobotv ({incol}) VALUES ({inval})"
+                    cur.executemany(sqll, vlist)
+                    self.madb.commit()
+                    sql = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
+                    cur.executemany(sql, wlist)
+                    self.madb.commit()
+                    print("sukses")
+                    self.sgui.BobotHasil.setTitle("Bias dan Bobot Awal")
+                else:
+                    print("Error Tidak Bisa Generate Bobot!")
 
-            # menampilkan bobot v pada tabel
-            baris, kolom = v.shape
-            self.sgui.tbBobotV.setColumnCount(kolom)
-            self.sgui.tbBobotV.setRowCount(baris)
-            for i in range(baris):
-                for j in range(kolom):
-                    self.sgui.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i,j], 4))))
+                # menampilkan bobot v pada tabel
+                baris, kolom = v.shape
+                self.sgui.tbBobotV.setColumnCount(kolom)
+                self.sgui.tbBobotV.setRowCount(baris)
+                for i in range(baris):
+                    for j in range(kolom):
+                        self.sgui.tbBobotV.setItem(i,j,QTableWidgetItem(str(round(v[i,j], 4))))
 
-            # menampilkan bobot w pada tabel
-            baris, kolom = w.shape
-            self.sgui.tbBobotW.setColumnCount(kolom)
-            self.sgui.tbBobotW.setRowCount(baris)
-            for i in range(baris):
-                for j in range(kolom):
-                    self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
+                # menampilkan bobot w pada tabel
+                baris, kolom = w.shape
+                self.sgui.tbBobotW.setColumnCount(kolom)
+                self.sgui.tbBobotW.setRowCount(baris)
+                for i in range(baris):
+                    for j in range(kolom):
+                        self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
 
-            # menyimpan data bobot ke dalam variabel global
-            self.n_bobotv = n_bobotv
-            self.n_bobotw = n_bobotw
-            self.v = v
-            self.w = w
-            self.staBaBot = 1
+                # menyimpan data bobot ke dalam variabel global
+                cur.execute("UPDATE tb_params SET dincol = %s, dcrecol = %s, dinsval = %s, ninput = %s, nhidden = %s, noutput = %s WHERE id = 1",(incol, crecol, inval, n_input, n_hidden, n_output,))
+                self.madb.commit()
+                self.incol = incol
+                self.crecol = crecol
+                self.inval = inval
+                self.v = v
+                self.w = w
+                self.staBaBot = 1
 
         except:
             print('Terjadi kesalahan pada proses pembacaan bobot {}'.format(sys.exc_info()[-1].tb_lineno))
@@ -669,31 +790,42 @@ class FormPelatihanJST(QMainWindow):
                     for j in range(kolom):
                         self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i, j], 3))))
 
-                """ gunakan gui_jst.ui untuk menggunakan fitur ini tetapi memiliki bug (grafik hanya bisa digunakan satu kali proses)
-                    # menampilkan grafik konvergensi proses pelatihan
-                    fig = plt.Figure(figsize=(10, 10))
-                    ax = fig.add_subplot(1,1,1)
-                    ax.plot(mse)
-                    ax.set_ylim(ymin=0)
-                    ax.set_ylabel('MSE')
-                    fig.subplots_adjust(left=0.18, bottom=0.2, right=0.98, top=0.9)
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
-
-                    plotWidget = FigureCanvas(fig)
-                    lay = QtWidgets.QVBoxLayout(self.gGrafik)
-                    lay.addWidget(plotWidget)"""
-
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = round((time.perf_counter() - time_start),2)
                 self.sgui.eWaktu.setText(str(time_stop))
                 self.sgui.eMSE.setText(str(mse[jml_iterasi-1, 0]))
+                self.sgui.BobotHasil.setTitle("Bias dan Bobot Hasil")
                 
+                # menyimpan hasil bias & bobot ke database
+                vlist = v.tolist()
+
+                wlist = w.tolist()
+
+                cur = self.madb.cursor()
+                cur.execute("TRUNCATE TABLE tb_bobotv")
+                cur.execute("TRUNCATE TABLE tb_bobotw")
+                cur.execute("SELECT dincol, dcrecol, dinsval FROM tb_params WHERE id = 1")
+                alda = cur.fetchall()
+                sqll1 = f"INSERT INTO tb_bobotv ({alda[0][0]}) VALUES ({alda[0][2]})"
+                cur.executemany(sqll1, vlist)
+                self.madb.commit()
+                sqll2 = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
+                cur.executemany(sqll2, wlist)
+                self.madb.commit()
+
+                smse = mse.tolist()
+                cur.execute("TRUNCATE TABLE tb_mse")
+                sqll = "INSERT INTO tb_mse (mse) VALUES (%s)"
+                cur.executemany(sqll, smse)
+                self.madb.commit()
+                cur.execute(f"UPDATE tb_params SET alpha = {alpha}, minerr = {min_error},  iterasi = {iterasi} WHERE id = 1")
+                self.madb.commit()
+
                 # menyimpan data hasil bobot pelatihan ke dalam variabel global
                 self.v = v
                 self.w = w
                 self.mse = mse
-                self.jml_iterasi = jml_iterasi
+                self.iterasi = iterasi
                 self.staPel = 1
                 
             else:
@@ -725,14 +857,19 @@ class FormPelatihanJST(QMainWindow):
 
                 x = msg.exec_()
             else:
+                cur = self.madb.cursor()
+                cur.execute("SELECT mse FROM tb_mse")
+                alda = cur.fetchall()
+                mse = np.array(alda)
+                cur.execute("SELECT iterasi FROM tb_params")
+                alda = cur.fetchone()[0]
+                iterasi = alda
+                
                 # menampilkan detail grafik
-                mse = self.mse
-                jml_iterasi = self.jml_iterasi
-
                 plt.figure()
-                plt.plot(mse[0:jml_iterasi, 0])
+                plt.plot(mse[0:iterasi, 0])
                 plt.ylim(ymin=0)
-                plt.xlabel('Iterasi ke-i, (0 < i < '+str(jml_iterasi)+')')
+                plt.xlabel('Iterasi ke-i, (0 < i < '+str(iterasi)+')')
                 plt.ylabel('MSE')
                 plt.title('Grafik Konvergensi Proses Pelatihan')
                 plt.show()
@@ -815,22 +952,6 @@ class FormPelatihanJST(QMainWindow):
                 x_tmp = list(range(1, n_datauji+1))
                 x1 = np.array([x_tmp]).transpose()
                 
-                """ gunakan gui_jst.ui untuk menggunakan fitur ini tetapi memiliki bug (grafik hanya bisa digunakan satu kali proses)
-                    fig = plt.Figure(figsize=(5, 5))
-                    ax = fig.add_subplot(1,1,1)
-                    ax.plot(x1, y1, 'r', x1, y2, 'g')
-                    ax.set_xlabel('Data Uji Ke-i, (0 < i < '+str(n_datauji)+')')
-                    ax.set_ylabel('Hasil Prediksi')
-                    ax.legend(('Hasil Prediksi JST', 'Data Sebenarnya'), loc='upper right')
-                    fig.subplots_adjust(left=0.15, bottom=0.3, right=0.98, top=0.9)
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
-
-                    plotWidget = FigureCanvas(fig)
-                    lay = QtWidgets.QVBoxLayout(self.gGrafik_2)
-                    lay.setContentsMargins(0, 0, 0, 0)
-                    lay.addWidget(plotWidget) """
-
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
                 self.sgui.eWaktu_2.setText(str(round(time_stop, 2)))
@@ -898,7 +1019,7 @@ class FormPelatihanJST(QMainWindow):
             print('Terjadi Kesalahan',sys.exc_info())
 
     def tampilKelola(self):
-        self.tampilForm = FormKelola()
+        self.tampilForm = FormKelola(self.adminnama)
         self.close()
     
     def get_random_alphaNumeric_string(self, stringLength):
@@ -936,16 +1057,18 @@ class FormPelatihanJST(QMainWindow):
 
 class FormKelola(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, namaAdmin):
         QMainWindow.__init__(self)
         self.sgui = gui_kelola.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.namaAdmin = namaAdmin
 
         self.sgui.pbKembali.clicked.connect(self.Kembali)
         self.show()
     
     def Kembali(self):
-        self.tampilForm = FormPelatihanJST()
+        adminnama = self.namaAdmin
+        self.tampilForm = FormPelatihanJST(adminnama)
         self.close()
 
 class FormPrediksi(QMainWindow):
