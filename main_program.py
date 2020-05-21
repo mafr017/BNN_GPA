@@ -550,7 +550,7 @@ class FormPelatihanJST(QMainWindow):
             self.staBaPel = 1
 
         except:
-            print('Terjadi kesalahan pada proses pembacaan data {}'.format(sys.exc_info()[-1].tb_lineno))
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
     # mendefinisikan fungsi untuk melakukan pembacaan data uji
     def BacaData_2(self):
@@ -617,7 +617,7 @@ class FormPelatihanJST(QMainWindow):
                 msg.exec_()
 
         except:
-            print('Terjadi kesalahan pada proses pembacaan data',sys.exc_info())
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
     # mendifinisikan fungsi untuk menampilkan bobot awal
     def BacaBobot(self):
@@ -954,6 +954,7 @@ class FormPelatihanJST(QMainWindow):
                 
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
+                time_stop = time_stop/60
                 self.sgui.eWaktu_2.setText(str(round(time_stop, 2)))
                 self.sgui.eMSE_2.setText(str(mse))
                 self.sgui.eAkurasi.setText(f"{rata2akurasi:0.2f}")
@@ -1043,8 +1044,6 @@ class FormPelatihanJST(QMainWindow):
 
         unikKey = uniqeKey
         msg = QMessageBox()
-        mafont = QtGui.QFont()
-        mafont.setBold(True)
         msg.setWindowTitle("Berhasil Menambah Admin!")
         msg.setText(f"<html><head/><body><p>Berhasil meng-generate Uniqe Key</p><p>Silahkan catat atau copy kode berikut: <span style=\" font-size:8pt; font-weight:600;\">{unikKey}</span></p></body></html>")
         msg.setDetailedText(f"{unikKey}")
@@ -1058,14 +1057,264 @@ class FormPelatihanJST(QMainWindow):
 class FormKelola(QMainWindow):
 
     def __init__(self, namaAdmin):
+    #def __init__(self):
         QMainWindow.__init__(self)
         self.sgui = gui_kelola.Ui_MainWindow()
         self.sgui.setupUi(self)
         self.namaAdmin = namaAdmin
+        kontrolDB.konek(self) #panggil fungsi koneksi server
 
+        self.sgui.pbLatih.clicked.connect(self.bacaDataLatih)
+        self.sgui.pbLatih.animateClick()
+        self.sgui.pbUji.clicked.connect(self.bacaDataUji)
+        self.sgui.pbHapusAll.clicked.connect(self.hapusSemuaData)
+        self.sgui.pbTambah.clicked.connect(self.tambahData)
+        self.sgui.pbTmbFile.clicked.connect(self.tambahDataFile)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
         self.show()
+
+    def bacaDataLatih(self):
+        try:
+            self.sgui.pbLatih.setChecked(True)
+            # membaca data latih dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_latih")
+            alda = cur.fetchall()
+            data_latih = np.array(alda) # simpan data kedalam bentuk list/array
+            n_datalatih = len(data_latih)
+
+            # menampilkan data latih pada tabel
+            self.sgui.tbDataPre.setRowCount(0)
+            self.sgui.tbDataPre.setRowCount(n_datalatih)
+            for i in range(n_datalatih):
+                self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_latih[i,0])))) # membaca parameter NIM
+                for j in range(18):
+                    k = j + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_latih[i,k]))) # membaca paramater input latih x1-x18
+                self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_latih[i,19]))) # membaca parameter target(IPK)
+            self.statData = 1;
+            self.sgui.pbUji.setChecked(False)
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def bacaDataUji(self):
+        try:
+            self.sgui.pbUji.setChecked(True)
+            # membaca data latih dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_uji")
+            alda = cur.fetchall()
+            data_uji = np.array(alda) # simpan data kedalam bentuk list/array
+            n_datauji = len(data_uji)
+
+            # menampilkan data latih pada tabel
+            self.sgui.tbDataPre.setRowCount(0)
+            self.sgui.tbDataPre.setRowCount(n_datauji)
+            for i in range(n_datauji):
+                self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0])))) # membaca parameter NIM
+                for j in range(18):
+                    k = j + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_uji[i,k]))) # membaca paramater input latih x1-x18
+                self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_uji[i,19]))) # membaca parameter target(IPK)
+            self.statData = 2;
+            self.sgui.pbLatih.setChecked(False)
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def tambahData(self):
+        try:
+            statData = self.statData
+            print(statData)
+
+            lnim = self.sgui.leNIM.text()
+            lx1 = self.sgui.leX1.text()
+            lx2 = self.sgui.leX2.text()
+            lx3 = self.sgui.leX3.text()
+            lx4 = self.sgui.leX4.text()
+            lx5 = self.sgui.leX5.text()
+            lx6 = self.sgui.leX6.text()
+            lx7 = self.sgui.leX7.text()
+            lx8 = self.sgui.leX8.text()
+            lx9 = self.sgui.leX9.text()
+            lx10 = self.sgui.leX10.text()
+            lx11 = self.sgui.leX11.text()
+            lx12 = self.sgui.leX12.text()
+            lx13 = self.sgui.leX13.text()
+            lx14 = self.sgui.leX14.text()
+            lx15 = self.sgui.leX15.text()
+            lx16 = self.sgui.leX16.text()
+            lx17 = self.sgui.leX17.text()
+            lx18 = self.sgui.leX18.text()
+            lipk = self.sgui.leIPK.text()
+
+            if lnim != "" and lx1 != "" and lx2 != "" and lx3 != "" and lx4 != "" and lx5 != "" and lx6 != "" and lx7 != "" and lx8 != "" and lx9 != "" and lx10 != "" and lx11 != "" and lx12 != "" and lx13 != "" and lx14 != "" and lx15 != "" and lx16 != "" and lx17 != "" and lx18 != "" and lipk != "" :
+                if statData == 1:
+                    cur = self.madb.cursor()
+                    cur.execute("INSERT INTO data_latih (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
+                    self.madb.commit()
+                    print(f"Berhasil Menambahkan data latih {lnim}")
+                    self.bacaDataLatih()
+                elif statData == 2:
+                    cur = self.madb.cursor()
+                    cur.execute("INSERT INTO data_uji (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
+                    self.madb.commit()
+                    print(f"Berhasil Menambahkan data uji {lnim}")
+                    self.bacaDataUji()
+                else:
+                    print("Error")
+            else:
+                print("Error")
+            
+            self.sgui.leNIM.setText("")
+            self.sgui.leX1.setText("")
+            self.sgui.leX2.setText("")
+            self.sgui.leX3.setText("")
+            self.sgui.leX4.setText("")
+            self.sgui.leX5.setText("")
+            self.sgui.leX6.setText("")
+            self.sgui.leX7.setText("")
+            self.sgui.leX8.setText("")
+            self.sgui.leX9.setText("")
+            self.sgui.leX10.setText("")
+            self.sgui.leX11.setText("")
+            self.sgui.leX12.setText("")
+            self.sgui.leX13.setText("")
+            self.sgui.leX14.setText("")
+            self.sgui.leX15.setText("")
+            self.sgui.leX16.setText("")
+            self.sgui.leX17.setText("")
+            self.sgui.leX18.setText("")
+            self.sgui.leIPK.setText("")
+            
+            lnim = None
+            lx1 = None
+            lx2 = None
+            lx3 = None
+            lx4 = None
+            lx5 = None
+            lx6 = None
+            lx7 = None
+            lx8 = None
+            lx9 = None
+            lx10 = None
+            lx11 = None
+            lx12 = None
+            lx13 = None
+            lx14 = None
+            lx15 = None
+            lx16 = None
+            lx17 = None
+            lx18 = None
+            lipk = None
+
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def tambahDataFile(self):
+        try:
+            statData = self.statData
+            print(statData)
+            
+            if statData == 1:
+                teks = "latih"
+                tb = "data_latih"
+            elif statData == 2:
+                teks = "uji"
+                tb = "data_uji"
+            else:
+                print("Error")
+            
+            # membaca file CSV data input dari penyimpanan lokal
+            path = QFileDialog.getOpenFileName(self, f'Silahkan pilih file data {teks}', '', "XLSX files (*.xlsx)")
+            namafile = path[0]
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            data = pd.read_excel(namafile, header=1)
+            data = np.array(data) # simpan data kedalam bentuk list/array
+            dataa = np.around(data,2)
+            in_data = data.tolist()
+
+            cur = self.madb.cursor()
+            sqll = f"INSERT INTO {tb} (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES "+"(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            vall = in_data
+            cur.executemany(sqll, vall)
+            self.madb.commit()
+            print(cur.rowcount, f"Data berhasil menambahkan data {teks} dari file!")
+
+            if statData == 1:
+                self.bacaDataLatih()
+            elif statData == 2:
+                self.bacaDataUji()
+            else:
+                print("Error")
+            
+            path = None
+            namafile = None
+            data = None
+            dataa = None
+            in_data = None
+            cur = None
+            sqll = None
+            vall = None
+
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()[1]}')
+
+    def hapusSemuaData(self):
+        try:
+            statData = self.statData
+            print(statData)
+            
+            if statData == 1:
+                judul = "Latih"
+                tb = "data_latih"
+                self.bacaDataLatih()
+            elif statData == 2:
+                judul = "Uji"
+                tb = "data_uji"
+                self.bacaDataUji()
+            else:
+                print("Error")
+
+            msg = QMessageBox()
+            msg.setWindowTitle(f"Konfirmasi Penghapusan Semua Data {judul}")
+            msg.setText(f"Apakah Anda Yakin Menghapus Semua Data {judul}?")
+            msg.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
+            msg.setIcon(QMessageBox.Information)
+            msg.buttonClicked.connect(self.popupButton)
+            x = msg.exec_()
+            if self.statKonf == "OK":
+                cura = self.madb.cursor()
+                print(f"Berhasil Menghapus Semua Data {judul}")
+                if tb == "data_latih":
+                    cura.execute("DROP TABLE data_latih")
+                    cura.execute("CREATE TABLE data_latih ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                elif tb == "data_uji":
+                    cura.execute("DROP TABLE data_uji")
+                    cura.execute("CREATE TABLE data_uji ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                else:
+                    print("error")
+
+                if statData == 1:
+                    self.bacaDataLatih()
+                elif statData == 2:
+                    self.bacaDataUji()
+                else:
+                    print("Error")
+            else:
+                print("Tidak Jadi Menghapus Semua Data")
+            
+            judul = None
+            tb = None
+
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
     
+    def popupButton(self, i):
+        self.statKonf = i.text()
+        print(i.text())
+
     def Kembali(self):
         adminnama = self.namaAdmin
         self.tampilForm = FormPelatihanJST(adminnama)
@@ -1089,5 +1338,5 @@ class FormPrediksi(QMainWindow):
 if __name__=="__main__":
     app = QApplication(sys.argv)
     w = FormMain()
-    #w = FormPelatihanJST()
+    #w = FormKelola()
     sys.exit(app.exec_())
