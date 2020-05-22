@@ -81,14 +81,17 @@ class FormMain(QMainWindow):
 
     def tampilLogin(self):
         self.tampilForm = FormLogin()
+        self.madb.close()
         self.close()
 
     def tampilPrediksi(self):
         self.tampilForm = FormPrediksi()
+        self.madb.close()
         self.close()
 
     def tampilRegister(self):
         self.tampilForm = FormRegister()
+        self.madb.close()
         self.close()
 
 class FormLogin(QMainWindow):
@@ -125,12 +128,13 @@ class FormLogin(QMainWindow):
             msg.setIcon(QMessageBox.Information)
             msg.exec_()
             self.tampilForm = FormPelatihanJST(namaAdmin)
+            self.madb.close()
             self.close()
         else:
             msg = QMessageBox()
             msg.setWindowTitle("Login Gagal!")
             msg.setText("Id atau Password Salah!")
-            msg.setIcon(QMessageBox.Information)
+            msg.setIcon(QMessageBox.Critical)
             msg.exec_()
             self.sgui.leId.setText("")
             self.sgui.lePass.setText("")
@@ -138,10 +142,12 @@ class FormLogin(QMainWindow):
 
     def tampilRegister(self):
         self.tampilForm = FormRegister()
+        self.madb.close()
         self.close()
     
     def tampilLupa(self):
         self.tampilForm = FormLupa()
+        self.madb.close()
         self.close()
     
     def tampilPetunjuk(self):
@@ -150,6 +156,7 @@ class FormLogin(QMainWindow):
 
     def Kembali(self):
         self.tampilForm = FormMain()
+        self.madb.close()
         self.close()
 
 class FormLupa(QMainWindow):
@@ -172,6 +179,7 @@ class FormLupa(QMainWindow):
 
     def Kembali(self):
         self.tampilForm = FormLogin()
+        self.madb.close()
         self.close()
 
 class FormRegister(QMainWindow):
@@ -190,7 +198,6 @@ class FormRegister(QMainWindow):
     def Registerr(self):
         statada = ""
         stattoken = ""
-        cur = self.madb.cursor()
 
         leuniqe = str(self.sgui.leNama_2.displayText())
         lenama = str(self.sgui.leNama.displayText())
@@ -198,12 +205,17 @@ class FormRegister(QMainWindow):
         leid = str(self.sgui.leId.displayText())
         lepass = str(self.sgui.lePass.text())
 
-        cuniqe = cur.execute("SELECT uniqe_key FROM tb_admin WHERE uniqe_key = %s",(leuniqe,))
+        cur = self.madb.cursor()
+        cur = self.madb.cursor()
+        cur.execute("SELECT uniqe_key FROM tb_admin WHERE uniqe_key = %s",(leuniqe,))
         ccuniqe = cur.fetchall()
+        cur.close()
         ccuniqe = len(ccuniqe)
         
-        cuniqe2 = cur.execute("SELECT uniqe_key FROM tb_uniqekey WHERE uniqe_key = %s",(leuniqe,))
+        cur = self.madb.cursor()
+        cur.execute("SELECT uniqe_key FROM tb_uniqekey WHERE uniqe_key = %s",(leuniqe,))
         ccuniqe2 = cur.fetchall()
+        cur.close()
         ccuniqe2 = len(ccuniqe2)
         if ccuniqe > 0:
             print("Uniqe Key sudah dipakai")
@@ -216,8 +228,10 @@ class FormRegister(QMainWindow):
         else:
             stata = 0
 
-        cnama = cur.execute("SELECT nama FROM tb_admin WHERE nama = %s",(lenama,))
+        cur = self.madb.cursor()
+        cur.execute("SELECT nama FROM tb_admin WHERE nama = %s",(lenama,))
         ccnama = cur.fetchall()
+        cur.close()
         ccnama = len(ccnama)
         if ccnama > 0:
             print("Nama sudah dipakai")
@@ -226,8 +240,10 @@ class FormRegister(QMainWindow):
         else:
             statb = 0
 
-        cemail = cur.execute("SELECT email FROM tb_admin WHERE email = %s",(leemail,))
+        cur = self.madb.cursor()
+        cur.execute("SELECT email FROM tb_admin WHERE email = %s",(leemail,))
         ccemail = cur.fetchall()
+        cur.close()
         ccemail = len(ccemail)
         if ccemail > 0:
             print("Email sudah dipakai")
@@ -236,8 +252,10 @@ class FormRegister(QMainWindow):
         else:
             statc = 0
 
-        cid = cur.execute("SELECT id FROM tb_admin WHERE id = %s",(leid,))
+        cur = self.madb.cursor()
+        cur.execute("SELECT id FROM tb_admin WHERE id = %s",(leid,))
         ccid = cur.fetchall()
+        cur.close()
         ccid = len(ccid)
         if ccid > 0:
             print("Id sudah dipakai")
@@ -270,15 +288,21 @@ class FormRegister(QMainWindow):
             msg.setText("Proses Regitrasi Berhasil, Silahkan Login!")
             msg.setIcon(QMessageBox.Information)
             msg.exec_()
+            cur = self.madb.cursor()
             cur.execute("UPDATE tb_uniqekey SET id = %s WHERE uniqe_key = %s",(leid, leuniqe,))
             self.madb.commit()
+            cur.close()
+            cur = self.madb.cursor()
             cur.execute("INSERT INTO tb_admin (uniqe_key, id, nama, email, password) VALUES (%s, %s, %s, %s, %s)",(leuniqe, leid, lenama, leemail, lepass,))
             self.madb.commit()
+            cur.close()
             self.tampilForm = FormLogin()
+            self.madb.close()
             self.close()
 
     def Kembali(self):
         self.tampilForm = FormMain()
+        self.madb.close()
         self.close()
         
 class FormAbout(QMainWindow):
@@ -384,9 +408,12 @@ class FormPelatihanJST(QMainWindow):
         cur = self.madb.cursor()
         cur.execute("SELECT n1 FROM tb_bobotv")
         biasv = cur.fetchall()
+        cur.close()
         lbiasv = len(biasv)
+        cur = self.madb.cursor()
         cur.execute("SELECT n1 FROM tb_bobotw")
         biasw = cur.fetchall()
+        cur.close()
         lbiasw = len(biasw)
         if lbiasv == 0 and lbiasw == 0 :
             biasv = ""
@@ -396,11 +423,15 @@ class FormPelatihanJST(QMainWindow):
             biasw = str(biasw[0][0])
 
             np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
             cur.execute("SELECT * FROM tb_bobotv")
             aldatv = cur.fetchall()
+            cur.close()
             v = np.array(aldatv)
+            cur = self.madb.cursor()
             cur.execute("SELECT * FROM tb_bobotw")
             aldatw = cur.fetchall()
+            cur.close()
             w = np.array(aldatw)
 
             # menampilkan bobot v pada tabel
@@ -424,8 +455,10 @@ class FormPelatihanJST(QMainWindow):
             self.w = w
             self.staBaBot = 1
 
+            cur = self.madb.cursor()
             cur.execute("SELECT * FROM tb_params")
             alda = cur.fetchall()
+            cur.close()
             qninput = alda[0][1]
             self.sgui.eNInp.setText(str(qninput))
             qnhidden = alda[0][2]
@@ -438,8 +471,10 @@ class FormPelatihanJST(QMainWindow):
             self.sgui.eMinE.setText(str(qminerr))
             qiterasi = alda[0][6]
             self.sgui.eIte.setText(str(qiterasi))
+            cur = self.madb.cursor()
             cur.execute("SELECT mse FROM tb_mse")
             alda = cur.fetchall()
+            cur.close()
             itra = qiterasi - 1
             qmse = alda[itra][0]
             self.sgui.eMSE.setText(str(qmse))
@@ -509,6 +544,7 @@ class FormPelatihanJST(QMainWindow):
             cur = self.madb.cursor()
             cur.execute("SELECT * FROM data_latih")
             alda = cur.fetchall()
+            cur.close()
 
             """ # membaca file CSV data input dari penyimpanan lokal
             path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
@@ -564,6 +600,7 @@ class FormPelatihanJST(QMainWindow):
                 cur = self.madb.cursor()
                 cur.execute("SELECT * FROM data_uji")
                 alda = cur.fetchall()
+                cur.close()
                 
                 """ # membaca file CSV data input dari penyimpanan lokal
                 path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
@@ -640,10 +677,13 @@ class FormPelatihanJST(QMainWindow):
                 vlist = v.tolist()
                 wlist = w.tolist()
 
-                cur = self.madb.cursor()
                 if n_hidden > 1 :
+                    cur = self.madb.cursor()
                     cur.execute("DROP TABLE tb_bobotv")
+                    cur.close()
+                    cur = self.madb.cursor()
                     cur.execute("TRUNCATE TABLE tb_bobotw")
+                    cur.close()
                     incol = "n1"
                     crecol = "n1 FLOAT NOT NULL"
                     inval = "%s"
@@ -655,31 +695,47 @@ class FormPelatihanJST(QMainWindow):
                         incol += colu
                         inval += colval
                         crecol += colcre
+                    cur = self.madb.cursor()
                     cur.execute(f"CREATE TABLE tb_bobotv ({crecol})")
+                    cur.close()
                     sql = f"INSERT INTO tb_bobotv ({incol}) VALUES ({inval})"
+                    cur = self.madb.cursor()
                     cur.executemany(sql, vlist)
                     self.madb.commit()
+                    cur.close()
+                    cur = self.madb.cursor()
                     sql = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
                     cur.executemany(sql, wlist)
                     self.madb.commit()
+                    cur.close()
                     print("sukses")
                     self.sgui.BobotHasil.setTitle("Bias dan Bobot Awal")
                 elif n_hidden == 1:
+                    cur = self.madb.cursor()
                     cur.execute("DROP TABLE tb_bobotv")
+                    cur.close()
+                    cur = self.madb.cursor()
                     cur.execute("TRUNCATE TABLE tb_bobotw")
+                    cur.close()
                     incol = "n1"
                     crecol = "n1 FLOAT NOT NULL"
                     inval = f"%s"
                     print(incol,"\n")
                     print(inval,"\n")
                     print(crecol,"\n")
+                    cur = self.madb.cursor()
                     cur.execute(f"CREATE TABLE tb_bobotv ({crecol})")
+                    cur.close()
                     sqll = f"INSERT INTO tb_bobotv ({incol}) VALUES ({inval})"
+                    cur = self.madb.cursor()
                     cur.executemany(sqll, vlist)
                     self.madb.commit()
+                    cur.close()
                     sql = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
+                    cur = self.madb.cursor()
                     cur.executemany(sql, wlist)
                     self.madb.commit()
+                    cur.close()
                     print("sukses")
                     self.sgui.BobotHasil.setTitle("Bias dan Bobot Awal")
                 else:
@@ -702,8 +758,10 @@ class FormPelatihanJST(QMainWindow):
                         self.sgui.tbBobotW.setItem(i,j,QTableWidgetItem(str(round(w[i,j], 4))))
 
                 # menyimpan data bobot ke dalam variabel global
+                cur = self.madb.cursor()
                 cur.execute("UPDATE tb_params SET dincol = %s, dcrecol = %s, dinsval = %s, ninput = %s, nhidden = %s, noutput = %s WHERE id = 1",(incol, crecol, inval, n_input, n_hidden, n_output,))
                 self.madb.commit()
+                cur.close()
                 self.incol = incol
                 self.crecol = crecol
                 self.inval = inval
@@ -803,23 +861,38 @@ class FormPelatihanJST(QMainWindow):
 
                 cur = self.madb.cursor()
                 cur.execute("TRUNCATE TABLE tb_bobotv")
+                cur.close()
+                cur = self.madb.cursor()
                 cur.execute("TRUNCATE TABLE tb_bobotw")
+                cur.close()
+                cur = self.madb.cursor()
                 cur.execute("SELECT dincol, dcrecol, dinsval FROM tb_params WHERE id = 1")
                 alda = cur.fetchall()
+                cur.close()
                 sqll1 = f"INSERT INTO tb_bobotv ({alda[0][0]}) VALUES ({alda[0][2]})"
+                cur = self.madb.cursor()
                 cur.executemany(sqll1, vlist)
                 self.madb.commit()
+                cur.close()
                 sqll2 = "INSERT INTO tb_bobotw (n1) VALUES (%s)"
+                cur = self.madb.cursor()
                 cur.executemany(sqll2, wlist)
                 self.madb.commit()
+                cur.close()
 
                 smse = mse.tolist()
+                cur = self.madb.cursor()
                 cur.execute("TRUNCATE TABLE tb_mse")
+                cur.close()
                 sqll = "INSERT INTO tb_mse (mse) VALUES (%s)"
+                cur = self.madb.cursor()
                 cur.executemany(sqll, smse)
                 self.madb.commit()
+                cur.close()
+                cur = self.madb.cursor()
                 cur.execute(f"UPDATE tb_params SET alpha = {alpha}, minerr = {min_error},  iterasi = {iterasi} WHERE id = 1")
                 self.madb.commit()
+                cur.close()
 
                 # menyimpan data hasil bobot pelatihan ke dalam variabel global
                 self.v = v
@@ -860,9 +933,12 @@ class FormPelatihanJST(QMainWindow):
                 cur = self.madb.cursor()
                 cur.execute("SELECT mse FROM tb_mse")
                 alda = cur.fetchall()
+                cur.close()
                 mse = np.array(alda)
+                cur = self.madb.cursor()
                 cur.execute("SELECT iterasi FROM tb_params")
                 alda = cur.fetchone()[0]
+                cur.close()
                 iterasi = alda
                 
                 # menampilkan detail grafik
@@ -954,7 +1030,6 @@ class FormPelatihanJST(QMainWindow):
                 
                 # menampilkan waktu pelatihan dan nilai MSE
                 time_stop = (time.perf_counter() - time_start)
-                time_stop = time_stop/60
                 self.sgui.eWaktu_2.setText(str(round(time_stop, 2)))
                 self.sgui.eMSE_2.setText(str(mse))
                 self.sgui.eAkurasi.setText(f"{rata2akurasi:0.2f}")
@@ -1021,6 +1096,7 @@ class FormPelatihanJST(QMainWindow):
 
     def tampilKelola(self):
         self.tampilForm = FormKelola(self.adminnama)
+        self.madb.close()
         self.close()
     
     def get_random_alphaNumeric_string(self, stringLength):
@@ -1034,10 +1110,13 @@ class FormPelatihanJST(QMainWindow):
             uniqeKey = self.get_random_alphaNumeric_string(8)
             cur.execute("SELECT uniqe_key FROM tb_uniqekey WHERE uniqe_key = %s",(uniqeKey,))
             idd = cur.fetchall()
+            cur.close()
             idds = len(idd)
             if idds == 0:
+                cur = self.madb.cursor()
                 cur.execute("INSERT INTO tb_uniqekey (uniqe_key) VALUES (%s)",(uniqeKey,))
                 self.madb.commit()
+                cur.close()
                 print(uniqeKey)
                 break
             i += 1
@@ -1052,26 +1131,344 @@ class FormPelatihanJST(QMainWindow):
 
     def LogOut(self):
         self.tampilForm = FormMain()
+        self.madb.close()
         self.close()
 
 class FormKelola(QMainWindow):
 
     def __init__(self, namaAdmin):
-    #def __init__(self):
         QMainWindow.__init__(self)
         self.sgui = gui_kelola.Ui_MainWindow()
         self.sgui.setupUi(self)
         self.namaAdmin = namaAdmin
+        self.sgui.lAdmin.setText(str(namaAdmin))
         kontrolDB.konek(self) #panggil fungsi koneksi server
 
+        #setup status bar
+        self.sgui.statusbarr = QStatusBar()
+        self.setStatusBar(self.sgui.statusbarr)
+        self.sgui.statusbarr.setStyleSheet('background-color: #FFFFFF;')
+
+        self.sgui.lstatus = QLabel()
+        self.sgui.lbdata = QLabel()
+        self.sgui.lstatus.setText(self.statSer)
+        self.sgui.lbdata.setText(str(""))
+        
+        self.sgui.statusbarr.addWidget(self.sgui.lstatus)
+        self.sgui.statusbarr.addWidget(self.sgui.lbdata)
+
         self.sgui.pbLatih.clicked.connect(self.bacaDataLatih)
+        self.sgui.tbDataPre.cellClicked.connect(self.pilihData)
         self.sgui.pbLatih.animateClick()
         self.sgui.pbUji.clicked.connect(self.bacaDataUji)
+        self.sgui.pbHapusOne.clicked.connect(self.hapusSatu)
         self.sgui.pbHapusAll.clicked.connect(self.hapusSemuaData)
+        self.sgui.pbUpdate.clicked.connect(self.ubahData)
         self.sgui.pbTambah.clicked.connect(self.tambahData)
+        self.sgui.pbClear.clicked.connect(self.bersihkanInputan)
         self.sgui.pbTmbFile.clicked.connect(self.tambahDataFile)
+        self.sgui.pbSearch.clicked.connect(self.cariData)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
         self.show()
+    
+    def cariData(self):
+        try:
+            statData = self.statData
+            print(statData)
+
+            lnim = self.sgui.leNIM.text()
+            lx1 = self.sgui.leX1.text()
+            lx2 = self.sgui.leX2.text()
+            lx3 = self.sgui.leX3.text()
+            lx4 = self.sgui.leX4.text()
+            lx5 = self.sgui.leX5.text()
+            lx6 = self.sgui.leX6.text()
+            lx7 = self.sgui.leX7.text()
+            lx8 = self.sgui.leX8.text()
+            lx9 = self.sgui.leX9.text()
+            lx10 = self.sgui.leX10.text()
+            lx11 = self.sgui.leX11.text()
+            lx12 = self.sgui.leX12.text()
+            lx13 = self.sgui.leX13.text()
+            lx14 = self.sgui.leX14.text()
+            lx15 = self.sgui.leX15.text()
+            lx16 = self.sgui.leX16.text()
+            lx17 = self.sgui.leX17.text()
+            lx18 = self.sgui.leX18.text()
+            lipk = self.sgui.leIPK.text()
+        
+            if lnim != "" or lx1 != "" or lx2 != "" or lx3 != "" or lx4 != "" or lx5 != "" or lx6 != "" or lx7 != "" or lx8 != "" or lx9 != "" or lx10 != "" or lx11 != "" or lx12 != "" or lx13 != "" or lx14 != "" or lx15 != "" or lx16 != "" or lx17 != "" or lx18 != "" or lipk != "" :
+                bSec = 0
+                bSql = ""
+                if lnim != "":
+                    bSec += 1
+                    bSql += f"nim LIKE '%{lnim}%'"
+                else:
+                    print("no nim")
+                if lx1 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x1 LIKE '%{lx1}%'"
+                    else:
+                        bSec += 1
+                        bSql += f"x1 LIKE '%{lx1}%'"
+                else:
+                    print("no lx1")
+                if lx2 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x2 LIKE '%{lx2}%'"
+                    else:
+                        bSec += 1
+                        bSql += f"x2 LIKE '%{lx2}%'"
+                else:
+                    print("no lx2")
+                if lx3 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x3 LIKE '%{lx3}%'"
+                    else:
+                        bSec += 1
+                        bSql += f"x3 LIKE '%{lx3}%'"
+                else:
+                    print("no lx3")
+                if lx4 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x4 LIKE '%{lx4}%'"
+                    else:
+                        bSec += 1
+                        bSql += f"x4 LIKE '%{lx4}%'"
+                else:
+                    print("no lx4")
+                if lx5 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x5 = '{lx5}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x5 = '{lx5}'"
+                else:
+                    print("no lx5")
+                if lx6 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x6 = '{lx6}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x6 = '{lx6}'"
+                else:
+                    print("no lx6")
+                if lx7 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x7 = '{lx7}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x7 = '{lx7}'"
+                else:
+                    print("no lx7")
+                if lx8 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x8 = '{lx8}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x8 = '{lx8}'"
+                else:
+                    print("no lx8")
+                if lx9 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x9 = '{lx9}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x9 = '{lx9}'"
+                else:
+                    print("no lx9")
+                if lx10 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x10 = '{lx10}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x10 = '{lx10}'"
+                else:
+                    print("no lx10")
+                if lx11 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x11 = '{lx11}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x11 = '{lx11}'"
+                else:
+                    print("no lx11")
+                if lx12 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x12 = '{lx12}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x12 = '{lx12}'"
+                else:
+                    print("no lx12")
+                if lx13 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x13 = '{lx13}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x13 = '{lx13}'"
+                else:
+                    print("no lx13")
+                if lx14 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x14 = '{lx14}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x14 = '{lx14}'"
+                else:
+                    print("no lx14")
+                if lx15 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x15 = '{lx15}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x15 = '{lx15}'"
+                else:
+                    print("no lx15")
+                if lx16 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x16 = '{lx16}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x16 = '{lx16}'"
+                else:
+                    print("no lx16")
+                if lx17 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x17 = '{lx17}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x17 = '{lx17}'"
+                else:
+                    print("no lx17")
+                if lx18 != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and x18 = '{lx18}'"
+                    else:
+                        bSec += 1
+                        bSql += f"x18 = '{lx18}'"
+                else:
+                    print("no l1x8")
+                if lipk != "":
+                    if bSec != 0:
+                        bSec += 1
+                        bSql += f"and ipk LIKE '%{lipk}%'"
+                    else:
+                        bSec += 1
+                        bSql += f"ipk LIKE '%{lipk}%'"
+                else:
+                    print("no lipk")
+                
+                print(f"jumlah filter ={bSec}")
+                print(f"sql = {bSql}")
+
+                if statData == 1:
+                    cur = self.madb.cursor()
+                    cur.execute(f"SELECT * FROM data_latih WHERE {bSql}")
+                    idd = cur.fetchall()
+                    cur.close()
+                    data_latih = np.array(idd) # simpan data kedalam bentuk list/array
+                    idds = len(idd)
+
+                    # menampilkan data latih pada tabel
+                    self.sgui.tbDataPre.setRowCount(0)
+                    self.sgui.tbDataPre.setRowCount(idds)
+                    for i in range(idds):
+                        self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_latih[i,0])))) # membaca parameter NIM
+                        for j in range(4):
+                            k = j + 1
+                            self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_latih[i,k]))) # membaca paramater input latih x1-x18
+                        for l in range(4, 18):
+                            k = l + 1
+                            self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(int(data_latih[i,k])))) # membaca paramater input latih x1-x18
+                        self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_latih[i,19]))) # membaca parameter target(IPK)
+                    
+                    print(f"Banyak data yang terfilter: {idds}")
+                    print("Data yang terfilter:\n",idd)
+                    bSql = ""
+                elif statData == 2:
+                    cur = self.madb.cursor()
+                    cur.execute(f"SELECT * FROM data_uji WHERE {bSql}")
+                    idd = cur.fetchall()
+                    cur.close()
+                    data_uji = np.array(idd) # simpan data kedalam bentuk list/array
+                    idds = len(idd)
+
+                    # menampilkan data latih pada tabel
+                    self.sgui.tbDataPre.setRowCount(0)
+                    self.sgui.tbDataPre.setRowCount(idds)
+                    for i in range(idds):
+                        self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0])))) # membaca parameter NIM
+                        for j in range(4):
+                            k = j + 1
+                            self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_uji[i,k]))) # membaca paramater input latih x1-x18
+                        for l in range(4,18):
+                            k = l + 1
+                            self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(int(data_uji[i,k])))) # membaca paramater input latih x1-x18
+                        self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_uji[i,19]))) # membaca parameter target(IPK)
+
+                    print(f"Banyak data yang terfilter: {idds}")
+                    print("Data yang terfilter:\n",idd)
+                    bSql = ""
+                else:
+                    print("Error")
+            else:
+                if statData == 1:
+                    self.bacaDataLatih()
+                elif statData == 2:
+                    self.bacaDataUji()
+                else:
+                    print("Error")
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def pilihData(self, row, column):
+        item = self.sgui.tbDataPre.item(row, 0)
+        self.ID = item.text()
+        print(f"Baris {row} dan kolom {column} dipilih, NIM: {self.ID}")
+
+        items = np.zeros((20,1))
+        for i in range(20):
+            item = self.sgui.tbDataPre.item(row, i)
+            items[i,0] = item.text()
+        self.sgui.leNIM.setText(str(int(items[0,0])))
+        self.sgui.leX1.setText(str(float(items[1,0])))
+        self.sgui.leX2.setText(str(float(items[2,0])))
+        self.sgui.leX3.setText(str(float(items[3,0])))
+        self.sgui.leX4.setText(str(float(items[4,0])))
+        self.sgui.leX5.setText(str(int(items[5,0])))
+        self.sgui.leX6.setText(str(int(items[6,0])))
+        self.sgui.leX7.setText(str(int(items[7,0])))
+        self.sgui.leX8.setText(str(int(items[8,0])))
+        self.sgui.leX9.setText(str(int(items[9,0])))
+        self.sgui.leX10.setText(str(int(items[10,0])))
+        self.sgui.leX11.setText(str(int(items[11,0])))
+        self.sgui.leX12.setText(str(int(items[12,0])))
+        self.sgui.leX13.setText(str(int(items[13,0])))
+        self.sgui.leX14.setText(str(int(items[14,0])))
+        self.sgui.leX15.setText(str(int(items[15,0])))
+        self.sgui.leX16.setText(str(int(items[16,0])))
+        self.sgui.leX17.setText(str(int(items[17,0])))
+        self.sgui.leX18.setText(str(int(items[18,0])))
+        self.sgui.leIPK.setText(str(float(items[19,0])))
 
     def bacaDataLatih(self):
         try:
@@ -1081,6 +1478,7 @@ class FormKelola(QMainWindow):
             cur = self.madb.cursor()
             cur.execute("SELECT * FROM data_latih")
             alda = cur.fetchall()
+            cur.close()
             data_latih = np.array(alda) # simpan data kedalam bentuk list/array
             n_datalatih = len(data_latih)
 
@@ -1089,12 +1487,18 @@ class FormKelola(QMainWindow):
             self.sgui.tbDataPre.setRowCount(n_datalatih)
             for i in range(n_datalatih):
                 self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_latih[i,0])))) # membaca parameter NIM
-                for j in range(18):
+                for j in range(4):
                     k = j + 1
                     self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_latih[i,k]))) # membaca paramater input latih x1-x18
+                for l in range(4, 18):
+                    k = l + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(int(data_latih[i,k])))) # membaca paramater input latih x1-x18
                 self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_latih[i,19]))) # membaca parameter target(IPK)
             self.statData = 1;
             self.sgui.pbUji.setChecked(False)
+            self.sgui.glistdata.setTitle("Tabel Data Latih")
+
+            self.sgui.lbdata.setText(str(f"Jumlah Data: {n_datalatih}"))
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
@@ -1106,6 +1510,7 @@ class FormKelola(QMainWindow):
             cur = self.madb.cursor()
             cur.execute("SELECT * FROM data_uji")
             alda = cur.fetchall()
+            cur.close()
             data_uji = np.array(alda) # simpan data kedalam bentuk list/array
             n_datauji = len(data_uji)
 
@@ -1114,12 +1519,18 @@ class FormKelola(QMainWindow):
             self.sgui.tbDataPre.setRowCount(n_datauji)
             for i in range(n_datauji):
                 self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0])))) # membaca parameter NIM
-                for j in range(18):
+                for j in range(4):
                     k = j + 1
                     self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_uji[i,k]))) # membaca paramater input latih x1-x18
+                for l in range(4, 18):
+                    k = l + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(int(data_uji[i,k])))) # membaca paramater input latih x1-x18
                 self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_uji[i,19]))) # membaca parameter target(IPK)
             self.statData = 2;
             self.sgui.pbLatih.setChecked(False)
+            self.sgui.glistdata.setTitle("Tabel Data Uji")
+
+            self.sgui.lbdata.setText(str(f"Jumlah Data: {n_datauji}"))
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
@@ -1152,20 +1563,53 @@ class FormKelola(QMainWindow):
             if lnim != "" and lx1 != "" and lx2 != "" and lx3 != "" and lx4 != "" and lx5 != "" and lx6 != "" and lx7 != "" and lx8 != "" and lx9 != "" and lx10 != "" and lx11 != "" and lx12 != "" and lx13 != "" and lx14 != "" and lx15 != "" and lx16 != "" and lx17 != "" and lx18 != "" and lipk != "" :
                 if statData == 1:
                     cur = self.madb.cursor()
-                    cur.execute("INSERT INTO data_latih (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
-                    self.madb.commit()
-                    print(f"Berhasil Menambahkan data latih {lnim}")
-                    self.bacaDataLatih()
+                    cur.execute(f"SELECT * FROM data_latih WHERE NIM = {lnim}")
+                    idd = cur.fetchall()
+                    cur.close()
+                    idds = len(idd)
+                    if idds > 0:
+                        print("NIM sudah ada di dalam database!")
+                        msg = QMessageBox()
+                        msg.setWindowTitle("Proses Dibatalakan!")
+                        msg.setText("Proses tambah data dibatalkan, karena NIM sudah terdaftar di database!")
+                        msg.setIcon(QMessageBox.Critical)
+                        msg.exec_()
+                    else:
+                        cur = self.madb.cursor()
+                        cur.execute("INSERT INTO data_latih (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
+                        self.madb.commit()
+                        cur.close()
+                        print(f"Berhasil Menambahkan data latih {lnim}")
+                        self.bacaDataLatih()
                 elif statData == 2:
                     cur = self.madb.cursor()
-                    cur.execute("INSERT INTO data_uji (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
-                    self.madb.commit()
-                    print(f"Berhasil Menambahkan data uji {lnim}")
-                    self.bacaDataUji()
+                    cur.execute(f"SELECT * FROM data_uji WHERE NIM = {lnim}")
+                    idd = cur.fetchall()
+                    cur.close()
+                    idds = len(idd)
+                    if idds > 0:
+                        print("NIM sudah ada di dalam database!")
+                        msg = QMessageBox()
+                        msg.setWindowTitle("Proses Dibatalakan!")
+                        msg.setText("Proses tambah data dibatalkan, karena NIM sudah terdaftar di database!")
+                        msg.setIcon(QMessageBox.Critical)
+                        msg.exec_()
+                    else:
+                        cur = self.madb.cursor()
+                        cur.execute("INSERT INTO data_uji (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
+                        self.madb.commit()
+                        cur.close()
+                        print(f"Berhasil Menambahkan data uji {lnim}")
+                        self.bacaDataUji()
                 else:
                     print("Error")
             else:
                 print("Error")
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses Tambah dibatalkan! Harap isi semua form input!")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
             
             self.sgui.leNIM.setText("")
             self.sgui.leX1.setText("")
@@ -1188,29 +1632,31 @@ class FormKelola(QMainWindow):
             self.sgui.leX18.setText("")
             self.sgui.leIPK.setText("")
             
-            lnim = None
-            lx1 = None
-            lx2 = None
-            lx3 = None
-            lx4 = None
-            lx5 = None
-            lx6 = None
-            lx7 = None
-            lx8 = None
-            lx9 = None
-            lx10 = None
-            lx11 = None
-            lx12 = None
-            lx13 = None
-            lx14 = None
-            lx15 = None
-            lx16 = None
-            lx17 = None
-            lx18 = None
-            lipk = None
-
+            lnim = lx1 = lx2 = lx3 = lx4 = lx5 = lx6 = lx7 = lx8 = lx9 = lx10 = lx11 = lx12 = lx13 = lx14 = lx15 = lx16 = lx17 = lx18 = lipk = None
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def bersihkanInputan(self):
+        self.sgui.leNIM.setText("")
+        self.sgui.leX1.setText("")
+        self.sgui.leX2.setText("")
+        self.sgui.leX3.setText("")
+        self.sgui.leX4.setText("")
+        self.sgui.leX5.setText("")
+        self.sgui.leX6.setText("")
+        self.sgui.leX7.setText("")
+        self.sgui.leX8.setText("")
+        self.sgui.leX9.setText("")
+        self.sgui.leX10.setText("")
+        self.sgui.leX11.setText("")
+        self.sgui.leX12.setText("")
+        self.sgui.leX13.setText("")
+        self.sgui.leX14.setText("")
+        self.sgui.leX15.setText("")
+        self.sgui.leX16.setText("")
+        self.sgui.leX17.setText("")
+        self.sgui.leX18.setText("")
+        self.sgui.leIPK.setText("")
 
     def tambahDataFile(self):
         try:
@@ -1240,6 +1686,7 @@ class FormKelola(QMainWindow):
             vall = in_data
             cur.executemany(sqll, vall)
             self.madb.commit()
+            cur.close()
             print(cur.rowcount, f"Data berhasil menambahkan data {teks} dari file!")
 
             if statData == 1:
@@ -1249,17 +1696,145 @@ class FormKelola(QMainWindow):
             else:
                 print("Error")
             
-            path = None
-            namafile = None
-            data = None
-            dataa = None
-            in_data = None
-            cur = None
-            sqll = None
-            vall = None
+            path = namafile = data = dataa = in_data = cur = sqll = vall = None
 
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()[1]}')
+
+    def hapusSatu(self):
+        try:
+            statData = self.statData
+            fnim = self.sgui.leNIM.text()
+            if fnim != "":
+                if statData == 1:
+                    judul = "Latih"
+                    tb = "data_latih"
+                    self.bacaDataLatih()
+                elif statData == 2:
+                    judul = "Uji"
+                    tb = "data_uji"
+                    self.bacaDataUji()
+                else:
+                    print("Error")
+
+                msg = QMessageBox()
+                msg.setWindowTitle(f"Konfirmasi Penghapusan Data {fnim}")
+                msg.setText(f"Apakah Anda Yakin Menghapus Data {fnim}?")
+                msg.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
+                msg.setIcon(QMessageBox.Information)
+                msg.buttonClicked.connect(self.popupButton)
+                x = msg.exec_()
+
+                if self.statKonf == "OK":
+                    print(f"Berhasil Menghapus Data {fnim}")
+                    if tb == "data_latih":
+                        cura = self.madb.cursor()
+                        cura.execute(f"DELETE FROM data_latih WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
+                    elif tb == "data_uji":
+                        cura = self.madb.cursor()
+                        cura.execute(f"DELETE FROM data_uji WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
+                    else:
+                        print("error")
+
+                    if statData == 1:
+                        self.bacaDataLatih()
+                    elif statData == 2:
+                        self.bacaDataUji()
+                    else:
+                        print("Error")
+                else:
+                    print(f"Tidak Jadi Menghapus Data {fnim}")
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses hapus dibatalkan! Harap isi terlebih dahulu form NIM dengan data yang akan dihapus!")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def ubahData(self):
+        try:
+            statData = self.statData
+            fnim = self.sgui.leNIM.text()
+            fx1 = self.sgui.leX1.text()
+            fx2 = self.sgui.leX2.text()
+            fx3 = self.sgui.leX3.text()
+            fx4 = self.sgui.leX4.text()
+            fx5 = self.sgui.leX5.text()
+            fx6 = self.sgui.leX6.text()
+            fx7 = self.sgui.leX7.text()
+            fx8 = self.sgui.leX8.text()
+            fx9 = self.sgui.leX9.text()
+            fx10 = self.sgui.leX10.text()
+            fx11 = self.sgui.leX11.text()
+            fx12 = self.sgui.leX12.text()
+            fx13 = self.sgui.leX13.text()
+            fx14 = self.sgui.leX14.text()
+            fx15 = self.sgui.leX15.text()
+            fx16 = self.sgui.leX16.text()
+            fx17 = self.sgui.leX17.text()
+            fx18 = self.sgui.leX18.text()
+            fipk = self.sgui.leIPK.text()
+            
+            if fnim != "":
+                if statData == 1:
+                    judul = "Latih"
+                    tb = "data_latih"
+                    self.bacaDataLatih()
+                elif statData == 2:
+                    judul = "Uji"
+                    tb = "data_uji"
+                    self.bacaDataUji()
+                else:
+                    print("Error")
+
+                msg = QMessageBox()
+                msg.setWindowTitle(f"Konfirmasi Pengubahan Data {fnim}")
+                msg.setText(f"Apakah Anda Yakin Mengubah Data {fnim}?")
+                msg.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
+                msg.setIcon(QMessageBox.Information)
+                msg.buttonClicked.connect(self.popupButton)
+                x = msg.exec_()
+
+                if self.statKonf == "OK":
+                    print(f"Berhasil Mengubah Data {fnim}")
+                    if tb == "data_latih":
+                        cura = self.madb.cursor()
+                        cura.execute(f"UPDATE data_latih set x1 = {fx1}, x2 = {fx2}, x3 = {fx3}, x4 = {fx4}, x5 = {fx5}, x6 = {fx6}, x7 = {fx7}, x8 = {fx8}, x9 = {fx9}, x10 = {fx10}, x11 = {fx11}, x12 = {fx12}, x13 = {fx13}, x14 = {fx14}, x15 = {fx15}, x16 = {fx16}, x17 = {fx17}, x18 = {fx18}, ipk = {fipk} WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
+                    elif tb == "data_uji":
+                        cura = self.madb.cursor()
+                        cura.execute(f"UPDATE data_uji set x1 = {fx1}, x2 = {fx2}, x3 = {fx3}, x4 = {fx4}, x5 = {fx5}, x6 = {fx6}, x7 = {fx7}, x8 = {fx8}, x9 = {fx9}, x10 = {fx10}, x11 = {fx11}, x12 = {fx12}, x13 = {fx13}, x14 = {fx14}, x15 = {fx15}, x16 = {fx16}, x17 = {fx17}, x18 = {fx18}, ipk = {fipk} WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
+                    else:
+                        print("error")
+
+                    if statData == 1:
+                        self.bacaDataLatih()
+                    elif statData == 2:
+                        self.bacaDataUji()
+                    else:
+                        print("Error")
+                else:
+                    print(f"Tidak Jadi Mengubah Data {fnim}")
+
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses hapus dibatalkan! Harap isi terlebih dahulu form NIM dengan data yang akan dihapus!")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+
+            fnim = fx1 = fx2 = fx3 = fx4 = fx5 = fx6 = fx7 = fx8 = fx9 = fx10 = fx11 = fx12 = fx13 = fx14 = fx15 = fx16 = fx17 = fx18 = fipk = None
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
     def hapusSemuaData(self):
         try:
@@ -1285,14 +1860,21 @@ class FormKelola(QMainWindow):
             msg.buttonClicked.connect(self.popupButton)
             x = msg.exec_()
             if self.statKonf == "OK":
-                cura = self.madb.cursor()
                 print(f"Berhasil Menghapus Semua Data {judul}")
                 if tb == "data_latih":
+                    cura = self.madb.cursor()
                     cura.execute("DROP TABLE data_latih")
+                    cura.close()
+                    cura = self.madb.cursor()
                     cura.execute("CREATE TABLE data_latih ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                    cura.close()
                 elif tb == "data_uji":
+                    cura = self.madb.cursor()
                     cura.execute("DROP TABLE data_uji")
+                    cura.close()
+                    cura = self.madb.cursor()
                     cura.execute("CREATE TABLE data_uji ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                    cura.close()
                 else:
                     print("error")
 
@@ -1318,6 +1900,7 @@ class FormKelola(QMainWindow):
     def Kembali(self):
         adminnama = self.namaAdmin
         self.tampilForm = FormPelatihanJST(adminnama)
+        self.madb.close()
         self.close()
 
 class FormPrediksi(QMainWindow):
@@ -1338,5 +1921,4 @@ class FormPrediksi(QMainWindow):
 if __name__=="__main__":
     app = QApplication(sys.argv)
     w = FormMain()
-    #w = FormKelola()
     sys.exit(app.exec_())
