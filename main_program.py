@@ -29,6 +29,8 @@ import gui.gui_petunjuk as gui_petunjuk
 import gui.gui_prediksi as gui_prediksi
 import gui.gui_register as gui_register
 
+import sendEmail as sE
+
 class kontrolDB:
     def __init__(self):
         self.konek()
@@ -171,11 +173,36 @@ class FormLupa(QMainWindow):
         self.show()
     
     def Kirim(self):
-        msg = QMessageBox()
-        msg.setWindowTitle("Mengirim Bantuan Berhasil!")
-        msg.setText("Bantuan berhasil dikirim ke e-mail anda!")
-        msg.setIcon(QMessageBox.Information)
-        msg.exec_()
+        try:
+            kontrolDB.konek(self)
+            eemail = self.sgui.leEmail.text()
+            cur = self.madb.cursor()
+            cur.execute(f"SELECT id, nama, password FROM tb_admin WHERE email = '{eemail}'")
+            alda = cur.fetchall()
+            bada = len(alda)
+            cur.close()
+            if bada != 0 :
+                idadmin = alda[0][0]
+                namaAdmin = alda[0][1]
+                pswd = alda[0][2]
+                sE.kirimEmail(eemail, namaAdmin, idadmin, pswd)
+                msg = QMessageBox()
+                msg.setWindowTitle("Mengirim Bantuan Berhasil!")
+                msg.setText("Bantuan berhasil dikirim ke e-mail anda!")
+                msg.setIcon(QMessageBox.Information)
+                msg.exec_()
+                self.sgui.leEmail.setText("")
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Mengirim Bantuan Gagal!")
+                msg.setText("Bantuan gagal dikirim! email yang anda masukan tidak terdaftar.")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+                self.sgui.leEmail.setText("")
+            self.madb.close()
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
 
     def Kembali(self):
         self.tampilForm = FormLogin()
@@ -356,12 +383,11 @@ class FormPelatihanJST(QMainWindow):
     pre = DPreparation()
     tra = DTransformation()
 
-    # pendefinisian init self
+    # pendefinisian inisialisasi kelas
     def __init__(self, namaAdmin):
         QMainWindow.__init__(self)
         self.sgui = gui_pelatihan.Ui_MainMenu()
         self.sgui.setupUi(self)
-        #loadUi ("D:\Learn programs\python\TA\gui\gui_jst_fix_no_bug.ui", self) # memanggil file gui_jst.ui
         self.setWindowTitle("Prediksi IPK Mahasiswa Sistem Komputer S1 - JST BACKPROPAGATION")
         kontrolDB.konek(self)
 
@@ -389,9 +415,7 @@ class FormPelatihanJST(QMainWindow):
         # memanggil fungsi-fungsi
         self.BacaData()
         self.BacaData_2()
-        #self.sgui.pbBaca.clicked.connect(self.BacaData_2)
         self.sgui.pbBaca.setHidden(True)
-        #self.sgui.pbBaca_2.clicked.connect(self.BacaData_2)
         self.sgui.pbBaca_2.setHidden(True)
         self.sgui.pbBobot.clicked.connect(self.BacaBobot)
         self.sgui.pbPelatihan.clicked.connect(self.ProPelatihan)
@@ -399,7 +423,7 @@ class FormPelatihanJST(QMainWindow):
         self.sgui.pbPengujian.clicked.connect(self.ProPengujian)
         self.sgui.pbDetailG_2.clicked.connect(self.DetailGrafik_2)
         self.sgui.pbKelola.clicked.connect(self.tampilKelola)
-        #self.sgui.pbCetak.clicked.connect(self.Cetak)
+        self.sgui.pbCetak.clicked.connect(self.Cetak)
         self.sgui.pbTambah.clicked.connect(self.TambahAdmin)
         self.sgui.pbLogout.clicked.connect(self.LogOut)
 
@@ -1127,6 +1151,12 @@ class FormPelatihanJST(QMainWindow):
         msg.setDetailedText(f"{unikKey}")
         msg.setIcon(QMessageBox.Information)
         msg.exec_()
+
+    def Cetak(self):
+        try:
+            print("Berhasil Cetak")
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
     def LogOut(self):
         self.tampilForm = FormMain()
@@ -1862,17 +1892,11 @@ class FormKelola(QMainWindow):
                 print(f"Berhasil Menghapus Semua Data {judul}")
                 if tb == "data_latih":
                     cura = self.madb.cursor()
-                    cura.execute("DROP TABLE data_latih")
-                    cura.close()
-                    cura = self.madb.cursor()
-                    cura.execute("CREATE TABLE data_latih ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                    cura.execute("TRUNCATE TABLE data_latih")
                     cura.close()
                 elif tb == "data_uji":
                     cura = self.madb.cursor()
-                    cura.execute("DROP TABLE data_uji")
-                    cura.close()
-                    cura = self.madb.cursor()
-                    cura.execute("CREATE TABLE data_uji ( NIM INT NOT NULL ,  x1 FLOAT NOT NULL ,  x2 FLOAT NOT NULL ,  x3 FLOAT NOT NULL ,  x4 FLOAT NOT NULL ,  x5 FLOAT NOT NULL ,  x6 FLOAT NOT NULL ,  x7 FLOAT NOT NULL ,  x8 FLOAT NOT NULL ,  x9 FLOAT NOT NULL ,  x10 FLOAT NOT NULL ,  x11 FLOAT NOT NULL ,  x12 FLOAT NOT NULL ,  x13 FLOAT NOT NULL ,  x14 FLOAT NOT NULL ,  x15 FLOAT NOT NULL ,  x16 FLOAT NOT NULL ,  x17 FLOAT NOT NULL ,  x18 FLOAT NOT NULL ,  ipk FLOAT NOT NULL)")
+                    cura.execute("TRUNCATE TABLE data_uji")
                     cura.close()
                 else:
                     print("error")
@@ -1927,6 +1951,11 @@ class FormPrediksi(QMainWindow):
         self.sgui.statusbarr.addWidget(self.sgui.lstatus)
 
         self.madb.close()
+
+        header = self.sgui.tbPrediksi.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
 
         np.set_printoptions(suppress=True, linewidth=np.inf)
         self.bentukAwal = np.zeros((1,19))
@@ -2188,20 +2217,18 @@ class FormPrediksi(QMainWindow):
                     aldalatih = cur.fetchall()
                     cur.close()
                     data_latih = np.array(aldalatih)
+                    #print(data_latih)
                     dataipk = data_latih[:,19]
                     datamax = max(dataipk)
                     datamin = min(dataipk)
                     data_latih = np.delete(data_latih, (19), axis=1)
                     badalatih = len(data_latih)
                     dataGabung = np.concatenate((data_latih, dataPrediksi))
-                    print(len(dataGabung))
 
                     totalDataPrediksi = len(dataPrediksi)
-                    print(totalDataPrediksi)
                     
                     dataGabung_normalisasi = self.Pronor(dataGabung)
                     dataUji_normalisasi = dataGabung_normalisasi[badalatih:,:]
-                    print(dataUji_normalisasi)
 
                     # memetakan array/matriks/list
                     hasil_prediksi = np.zeros((totalDataPrediksi, 1))
@@ -2216,6 +2243,7 @@ class FormPrediksi(QMainWindow):
                     for i in range(totalDataPrediksi):
                         hslprediksi_denormalisasi[i,0] = self.tra.Denormalisasi(hasil_prediksi[i,0], datamin, datamax)
                     
+                    responsi = self.responsi(dataPrediksi, hslprediksi_denormalisasi)
                     self.sgui.tbPrediksi.setRowCount(totalDataPrediksi)
                     for i in range(totalDataPrediksi):
                         hasiljst = hslprediksi_denormalisasi[i,0]
@@ -2223,6 +2251,7 @@ class FormPrediksi(QMainWindow):
                         # menampilkan hasil ke dalam tabel
                         self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(dataPrediksi[i,0]))))
                         self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(hasiljst, 2))))
+                        self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(responsi[i])))
                     self.statData = 2
                 self.madb.close()
             else:
@@ -2234,6 +2263,171 @@ class FormPrediksi(QMainWindow):
                 x = msg.exec_()
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def responsi(self, dataPrediksi, hslprediksi_denormalisasi):
+        try:
+            badata = len(dataPrediksi)
+            print(badata)
+            bapred = len(hslprediksi_denormalisasi)
+            print(bapred)
+            responsi = []
+            for i in range(badata):
+                rresp = "Berdasarkan hasil prediksi, "
+                x1 = dataPrediksi[i,1]
+                x2 = dataPrediksi[i,2]
+                x3 = dataPrediksi[i,3]
+                x4 = dataPrediksi[i,4]
+                x5 = dataPrediksi[i,5]
+                x6 = dataPrediksi[i,6]
+                x7 = dataPrediksi[i,7]
+                x8 = dataPrediksi[i,8]
+                x9 = dataPrediksi[i,9]
+                x10 = dataPrediksi[i,10]
+                x11 = dataPrediksi[i,11]
+                x12 = dataPrediksi[i,12]
+                x13 = dataPrediksi[i,13]
+                x14 = dataPrediksi[i,14]
+                x15 = dataPrediksi[i,15]
+                x16 = dataPrediksi[i,16]
+                x17 = dataPrediksi[i,17]
+                x18 = dataPrediksi[i,18]
+                preIPK = hslprediksi_denormalisasi[i,0]
+                if preIPK >= 2.75 :
+                    if x1 >= 2.75 and x2 >= 2.75 and x3 >= 2.75 and x4 >= 2.75 :
+                        if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk mengulang matakuliah "
+                            rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                            rresp += rresp2
+                            rresp2 = ""
+                            #print(rresp)
+                        else:
+                            rresp += "mahasiswa tidak mengalami masalah akademik."
+                            #print(rresp)
+                    else:
+                        if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                            rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk mengulang matakuliah "
+                            rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                            rresp += rresp2
+                            rresp2 = ""
+                            #print(rresp)
+                        else:
+                            rresp += "mahasiswa sedikit mengalami masalah akademik."
+                            #print(rresp)
+                else:
+                    if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk mengulang matakuliah "
+                        rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                        rresp += rresp2
+                        rresp2 = ""
+                        #print(rresp)
+                    else:
+                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk memperbaiki nilai matkuliah yang dirasa kurang."
+                        #print(rresp)
+                        
+                responsi.append(rresp)
+                rresp = ""
+            print(responsi[18])
+            return responsi
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def listResp(self, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18):
+        rresp = ""
+        statt = 0
+        if x5 <= 1 :
+            rresp += "Fisika 1"
+            statt = 1
+        if x6 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika 1"
+                statt = 1
+            else:
+                rresp += "Matematika 1"
+                statt = 1
+        if x7 <= 1 :
+            if statt == 1:
+                rresp += ", Fisika 2"
+                statt = 1
+            else:
+                rresp += "Fisika 2"
+                statt = 1
+        if x8 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika 2"
+                statt = 1
+            else:
+                rresp += "Matematika 2"
+                statt = 1
+        if x9 <= 1 :
+            if statt == 1:
+                rresp += ", Algoritma Pemograman"
+                statt = 1
+            else:
+                rresp += "Algoritma Pemograman"
+                statt = 1
+        if x10 <= 1 :
+            if statt == 1:
+                rresp += ", Elektronika 1"
+                statt = 1
+            else:
+                rresp += "Elektronika 1"
+                statt = 1
+        if x11 <= 1 :
+            if statt == 1:
+                rresp += ", Teori Sistem & Sinyal"
+                statt = 1
+            else:
+                rresp += "Teori Sistem & Sinyal"
+                statt = 1
+        if x12 <= 1 :
+            if statt == 1:
+                rresp += ", Organisasi & Arsitektur Komputer 1"
+                statt = 1
+            else:
+                rresp += "Organisasi & Arsitektur Komputer 1"
+                statt = 1
+        if x13 <= 1 :
+            if statt == 1:
+                rresp += ", Sistem Digital"
+                statt = 1
+            else:
+                rresp += "Sistem Digital"
+                statt = 1
+        if x14 <= 1 :
+            if statt == 1:
+                rresp += ", Elektronika 2"
+                statt = 1
+            else:
+                rresp += "Elektronika 2"
+                statt = 1
+        if x15 <= 1 :
+            if statt == 1:
+                rresp += ", Struktur Data"
+                statt = 1
+            else:
+                rresp += "Struktur Data"
+                statt = 1
+        if x16 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika Diskrit"
+                statt = 1
+            else:
+                rresp += "Matematika Diskrit"
+                statt = 1
+        if x17 <= 1 :
+            if statt == 1:
+                rresp += ", Komunikasi Data"
+                statt = 1
+            else:
+                rresp += "Komunikasi Data"
+                statt = 1
+        if x18 <= 1 :
+            if statt == 1:
+                rresp += ", Aljabar Linear"
+            else:
+                rresp += "Aljabar Linear"
+        rresp += "."
+        return rresp
 
     def popupButton(self, i):
         self.statKonf = i.text()
