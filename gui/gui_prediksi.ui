@@ -1,489 +1,934 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'gui_prediksi.ui'
-#
-# Created by: PyQt5 UI code generator 5.13.0
-#
-# WARNING! All changes made in this file will be lost!
-
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1063, 615)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_7.setObjectName("verticalLayout_7")
-        self.judul = QtWidgets.QLabel(self.centralwidget)
-        self.judul.setEnabled(True)
-        self.judul.setMaximumSize(QtCore.QSize(16777215, 30))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setKerning(True)
-        font.setStyleStrategy(QtGui.QFont.PreferDefault)
-        self.judul.setFont(font)
-        self.judul.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.judul.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.judul.setLineWidth(0)
-        self.judul.setTextFormat(QtCore.Qt.PlainText)
-        self.judul.setScaledContents(False)
-        self.judul.setAlignment(QtCore.Qt.AlignCenter)
-        self.judul.setIndent(0)
-        self.judul.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
-        self.judul.setObjectName("judul")
-        self.verticalLayout_7.addWidget(self.judul)
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame)
-        self.horizontalLayout_2.setContentsMargins(10, 0, 10, 0)
-        self.horizontalLayout_2.setSpacing(6)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
-        self.pbKembali = QtWidgets.QPushButton(self.frame)
-        self.pbKembali.setMinimumSize(QtCore.QSize(100, 0))
-        self.pbKembali.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.pbKembali.setObjectName("pbKembali")
-        self.horizontalLayout_2.addWidget(self.pbKembali)
-        self.verticalLayout_7.addWidget(self.frame)
-        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setObjectName("groupBox")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.groupBox)
-        self.verticalLayout.setContentsMargins(-1, 0, -1, -1)
-        self.verticalLayout.setSpacing(5)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.gInputData = QtWidgets.QGroupBox(self.groupBox)
-        self.gInputData.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.gInputData.setFlat(True)
-        self.gInputData.setCheckable(False)
-        self.gInputData.setObjectName("gInputData")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.gInputData)
-        self.gridLayout_3.setContentsMargins(-1, 0, -1, 0)
-        self.gridLayout_3.setObjectName("gridLayout_3")
-        self.label_9 = QtWidgets.QLabel(self.gInputData)
-        self.label_9.setObjectName("label_9")
-        self.gridLayout_3.addWidget(self.label_9, 3, 1, 1, 1)
-        self.label_28 = QtWidgets.QLabel(self.gInputData)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.label_28.setFont(font)
-        self.label_28.setWordWrap(True)
-        self.label_28.setObjectName("label_28")
-        self.gridLayout_3.addWidget(self.label_28, 3, 8, 1, 1)
-        self.label_11 = QtWidgets.QLabel(self.gInputData)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.label_11.setFont(font)
-        self.label_11.setWordWrap(True)
-        self.label_11.setObjectName("label_11")
-        self.gridLayout_3.addWidget(self.label_11, 3, 5, 1, 1)
-        self.label_24 = QtWidgets.QLabel(self.gInputData)
-        self.label_24.setWordWrap(True)
-        self.label_24.setObjectName("label_24")
-        self.gridLayout_3.addWidget(self.label_24, 3, 6, 1, 1)
-        self.label_25 = QtWidgets.QLabel(self.gInputData)
-        self.label_25.setWordWrap(True)
-        self.label_25.setObjectName("label_25")
-        self.gridLayout_3.addWidget(self.label_25, 3, 4, 1, 1)
-        self.label_10 = QtWidgets.QLabel(self.gInputData)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.label_10.setFont(font)
-        self.label_10.setWordWrap(True)
-        self.label_10.setObjectName("label_10")
-        self.gridLayout_3.addWidget(self.label_10, 3, 2, 1, 1)
-        self.label_23 = QtWidgets.QLabel(self.gInputData)
-        self.label_23.setWordWrap(True)
-        self.label_23.setObjectName("label_23")
-        self.gridLayout_3.addWidget(self.label_23, 3, 3, 1, 1)
-        self.label_31 = QtWidgets.QLabel(self.gInputData)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.label_31.setFont(font)
-        self.label_31.setWordWrap(True)
-        self.label_31.setObjectName("label_31")
-        self.gridLayout_3.addWidget(self.label_31, 3, 7, 1, 1)
-        self.label_8 = QtWidgets.QLabel(self.gInputData)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.label_8.setFont(font)
-        self.label_8.setWordWrap(True)
-        self.label_8.setObjectName("label_8")
-        self.gridLayout_3.addWidget(self.label_8, 3, 0, 1, 1)
-        self.leX18 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX18.setObjectName("leX18")
-        self.gridLayout_3.addWidget(self.leX18, 6, 0, 1, 1)
-        self.leX9 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX9.setObjectName("leX9")
-        self.gridLayout_3.addWidget(self.leX9, 4, 0, 1, 1)
-        self.leX12 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX12.setObjectName("leX12")
-        self.gridLayout_3.addWidget(self.leX12, 4, 3, 1, 1)
-        self.leX13 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX13.setObjectName("leX13")
-        self.gridLayout_3.addWidget(self.leX13, 4, 4, 1, 1)
-        self.label_29 = QtWidgets.QLabel(self.gInputData)
-        self.label_29.setWordWrap(True)
-        self.label_29.setObjectName("label_29")
-        self.gridLayout_3.addWidget(self.label_29, 5, 0, 1, 1)
-        self.leX11 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX11.setObjectName("leX11")
-        self.gridLayout_3.addWidget(self.leX11, 4, 2, 1, 1)
-        self.leX14 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX14.setObjectName("leX14")
-        self.gridLayout_3.addWidget(self.leX14, 4, 5, 1, 1)
-        self.leX10 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX10.setObjectName("leX10")
-        self.gridLayout_3.addWidget(self.leX10, 4, 1, 1, 1)
-        self.leX16 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX16.setObjectName("leX16")
-        self.gridLayout_3.addWidget(self.leX16, 4, 7, 1, 1)
-        self.leX17 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX17.setObjectName("leX17")
-        self.gridLayout_3.addWidget(self.leX17, 4, 8, 1, 1)
-        self.leX15 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX15.setObjectName("leX15")
-        self.gridLayout_3.addWidget(self.leX15, 4, 6, 1, 1)
-        self.leKey = QtWidgets.QLineEdit(self.gInputData)
-        self.leKey.setObjectName("leKey")
-        self.gridLayout_3.addWidget(self.leKey, 1, 0, 1, 1)
-        self.leX2 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX2.setObjectName("leX2")
-        self.gridLayout_3.addWidget(self.leX2, 1, 2, 1, 1)
-        self.leX4 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX4.setObjectName("leX4")
-        self.gridLayout_3.addWidget(self.leX4, 1, 4, 1, 1)
-        self.leX1 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX1.setObjectName("leX1")
-        self.gridLayout_3.addWidget(self.leX1, 1, 1, 1, 1)
-        self.leX5 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX5.setObjectName("leX5")
-        self.gridLayout_3.addWidget(self.leX5, 1, 5, 1, 1)
-        self.leX3 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX3.setObjectName("leX3")
-        self.gridLayout_3.addWidget(self.leX3, 1, 3, 1, 1)
-        self.leX6 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX6.setObjectName("leX6")
-        self.gridLayout_3.addWidget(self.leX6, 1, 6, 1, 1)
-        self.label_3 = QtWidgets.QLabel(self.gInputData)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout_3.addWidget(self.label_3, 0, 2, 1, 1)
-        self.label_7 = QtWidgets.QLabel(self.gInputData)
-        self.label_7.setObjectName("label_7")
-        self.gridLayout_3.addWidget(self.label_7, 0, 7, 1, 1)
-        self.leX7 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX7.setObjectName("leX7")
-        self.gridLayout_3.addWidget(self.leX7, 1, 7, 1, 1)
-        self.label_26 = QtWidgets.QLabel(self.gInputData)
-        self.label_26.setWordWrap(True)
-        self.label_26.setObjectName("label_26")
-        self.gridLayout_3.addWidget(self.label_26, 0, 8, 1, 1)
-        self.leX8 = QtWidgets.QLineEdit(self.gInputData)
-        self.leX8.setObjectName("leX8")
-        self.gridLayout_3.addWidget(self.leX8, 1, 8, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.gInputData)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout_3.addWidget(self.label_2, 0, 1, 1, 1)
-        self.label = QtWidgets.QLabel(self.gInputData)
-        self.label.setObjectName("label")
-        self.gridLayout_3.addWidget(self.label, 0, 0, 1, 1)
-        self.label_27 = QtWidgets.QLabel(self.gInputData)
-        self.label_27.setObjectName("label_27")
-        self.gridLayout_3.addWidget(self.label_27, 0, 3, 1, 1)
-        self.label_5 = QtWidgets.QLabel(self.gInputData)
-        self.label_5.setObjectName("label_5")
-        self.gridLayout_3.addWidget(self.label_5, 0, 5, 1, 1)
-        self.label_6 = QtWidgets.QLabel(self.gInputData)
-        self.label_6.setObjectName("label_6")
-        self.gridLayout_3.addWidget(self.label_6, 0, 6, 1, 1)
-        self.label_4 = QtWidgets.QLabel(self.gInputData)
-        self.label_4.setObjectName("label_4")
-        self.gridLayout_3.addWidget(self.label_4, 0, 4, 1, 1)
-        self.pbHapus = QtWidgets.QPushButton(self.gInputData)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pbHapus.sizePolicy().hasHeightForWidth())
-        self.pbHapus.setSizePolicy(sizePolicy)
-        self.pbHapus.setMinimumSize(QtCore.QSize(100, 30))
-        self.pbHapus.setAutoExclusive(False)
-        self.pbHapus.setAutoDefault(False)
-        self.pbHapus.setDefault(False)
-        self.pbHapus.setFlat(False)
-        self.pbHapus.setObjectName("pbHapus")
-        self.gridLayout_3.addWidget(self.pbHapus, 5, 7, 2, 2)
-        self.pbTambah = QtWidgets.QPushButton(self.gInputData)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pbTambah.sizePolicy().hasHeightForWidth())
-        self.pbTambah.setSizePolicy(sizePolicy)
-        self.pbTambah.setMinimumSize(QtCore.QSize(100, 30))
-        self.pbTambah.setAutoExclusive(False)
-        self.pbTambah.setAutoDefault(False)
-        self.pbTambah.setDefault(False)
-        self.pbTambah.setFlat(False)
-        self.pbTambah.setObjectName("pbTambah")
-        self.gridLayout_3.addWidget(self.pbTambah, 5, 1, 2, 2)
-        self.pbTmbFile = QtWidgets.QPushButton(self.gInputData)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pbTmbFile.sizePolicy().hasHeightForWidth())
-        self.pbTmbFile.setSizePolicy(sizePolicy)
-        self.pbTmbFile.setMinimumSize(QtCore.QSize(0, 30))
-        self.pbTmbFile.setAutoExclusive(False)
-        self.pbTmbFile.setAutoDefault(False)
-        self.pbTmbFile.setDefault(False)
-        self.pbTmbFile.setFlat(False)
-        self.pbTmbFile.setObjectName("pbTmbFile")
-        self.gridLayout_3.addWidget(self.pbTmbFile, 5, 3, 2, 2)
-        self.verticalLayout.addWidget(self.gInputData)
-        self.tbDataPre = QtWidgets.QTableWidget(self.groupBox)
-        self.tbDataPre.setMinimumSize(QtCore.QSize(0, 0))
-        self.tbDataPre.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.tbDataPre.setAutoFillBackground(True)
-        self.tbDataPre.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.tbDataPre.setAlternatingRowColors(True)
-        self.tbDataPre.setObjectName("tbDataPre")
-        self.tbDataPre.setColumnCount(19)
-        self.tbDataPre.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        font.setBold(False)
-        font.setWeight(50)
-        item.setFont(font)
-        self.tbDataPre.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(5, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(6, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(7, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(8, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(9, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(10, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(11, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(12, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(13, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(14, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(15, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(16, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(17, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbDataPre.setHorizontalHeaderItem(18, item)
-        self.tbDataPre.horizontalHeader().setDefaultSectionSize(60)
-        self.verticalLayout.addWidget(self.tbDataPre)
-        self.verticalLayout_7.addWidget(self.groupBox)
-        self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_2.setObjectName("frame_2")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.frame_2)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setSpacing(6)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem1)
-        self.pbProPre = QtWidgets.QPushButton(self.frame_2)
-        self.pbProPre.setMinimumSize(QtCore.QSize(250, 30))
-        self.pbProPre.setObjectName("pbProPre")
-        self.horizontalLayout_3.addWidget(self.pbProPre)
-        self.pbCetak = QtWidgets.QPushButton(self.frame_2)
-        self.pbCetak.setMinimumSize(QtCore.QSize(200, 30))
-        self.pbCetak.setMaximumSize(QtCore.QSize(300, 16777215))
-        self.pbCetak.setToolTip("")
-        self.pbCetak.setObjectName("pbCetak")
-        self.horizontalLayout_3.addWidget(self.pbCetak)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem2)
-        self.verticalLayout_7.addWidget(self.frame_2)
-        self.groupBox_5 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_5.setFlat(False)
-        self.groupBox_5.setObjectName("groupBox_5")
-        self.gridLayout = QtWidgets.QGridLayout(self.groupBox_5)
-        self.gridLayout.setObjectName("gridLayout")
-        self.tbPrediksi = QtWidgets.QTableWidget(self.groupBox_5)
-        self.tbPrediksi.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.tbPrediksi.setAutoFillBackground(True)
-        self.tbPrediksi.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.tbPrediksi.setDragDropOverwriteMode(False)
-        self.tbPrediksi.setAlternatingRowColors(True)
-        self.tbPrediksi.setObjectName("tbPrediksi")
-        self.tbPrediksi.setColumnCount(3)
-        self.tbPrediksi.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbPrediksi.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbPrediksi.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignVCenter)
-        self.tbPrediksi.setHorizontalHeaderItem(2, item)
-        self.tbPrediksi.horizontalHeader().setDefaultSectionSize(150)
-        self.tbPrediksi.horizontalHeader().setMinimumSectionSize(25)
-        self.gridLayout.addWidget(self.tbPrediksi, 0, 0, 1, 1)
-        self.verticalLayout_7.addWidget(self.groupBox_5)
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.judul.setText(_translate("MainWindow", "Menu Prediksi IPK Menggunakan ANN Backpropagation"))
-        self.pbKembali.setToolTip(_translate("MainWindow", "Kembali ke menu utama"))
-        self.pbKembali.setText(_translate("MainWindow", "Kembali"))
-        self.groupBox.setTitle(_translate("MainWindow", "Input Data Akademik Mahasiswa"))
-        self.gInputData.setTitle(_translate("MainWindow", "Input Data Uji"))
-        self.label_9.setText(_translate("MainWindow", "Elektronika 1"))
-        self.label_28.setText(_translate("MainWindow", "Komunikasi Data"))
-        self.label_11.setText(_translate("MainWindow", "Organisasi & Arsitektur Komp."))
-        self.label_24.setText(_translate("MainWindow", "Elektronika 2"))
-        self.label_25.setText(_translate("MainWindow", "Struktur Data"))
-        self.label_10.setText(_translate("MainWindow", "Teori Sistem & Sinyal"))
-        self.label_23.setText(_translate("MainWindow", "Sistem Digital"))
-        self.label_31.setText(_translate("MainWindow", "Matematika Diskrit"))
-        self.label_8.setText(_translate("MainWindow", "Algoritma Pemograman"))
-        self.leX18.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX9.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX12.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX13.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.label_29.setText(_translate("MainWindow", "Aljabar Linier"))
-        self.leX11.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX14.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX10.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX16.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX17.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX15.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leKey.setPlaceholderText(_translate("MainWindow", "102XXXXX"))
-        self.leX2.setPlaceholderText(_translate("MainWindow", "0.0 - 4.0"))
-        self.leX4.setPlaceholderText(_translate("MainWindow", "0.0 - 4.0"))
-        self.leX1.setPlaceholderText(_translate("MainWindow", "0.0 - 4.0"))
-        self.leX5.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.leX3.setPlaceholderText(_translate("MainWindow", "0.0 - 4.0"))
-        self.leX6.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.label_3.setText(_translate("MainWindow", "IPS 2"))
-        self.label_7.setText(_translate("MainWindow", "Fisika 2"))
-        self.leX7.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.label_26.setText(_translate("MainWindow", "Matematika 2"))
-        self.leX8.setPlaceholderText(_translate("MainWindow", "0 - 4"))
-        self.label_2.setText(_translate("MainWindow", "IPS 1"))
-        self.label.setText(_translate("MainWindow", "NIM"))
-        self.label_27.setText(_translate("MainWindow", "IPS 3"))
-        self.label_5.setText(_translate("MainWindow", "Fisika 1"))
-        self.label_6.setText(_translate("MainWindow", "Matematika 1"))
-        self.label_4.setText(_translate("MainWindow", "IPS 4"))
-        self.pbHapus.setToolTip(_translate("MainWindow", "Menghapus semua data input pada tabel"))
-        self.pbHapus.setText(_translate("MainWindow", "Hapus Semua Input Data"))
-        self.pbTambah.setText(_translate("MainWindow", "Tambah"))
-        self.pbTmbFile.setToolTip(_translate("MainWindow", "Menambah data input dari file excel"))
-        self.pbTmbFile.setText(_translate("MainWindow", "Tambah Data Dari File"))
-        self.tbDataPre.setSortingEnabled(True)
-        item = self.tbDataPre.horizontalHeaderItem(0)
-        item.setText(_translate("MainWindow", "NIM"))
-        item = self.tbDataPre.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "IPS 1"))
-        item = self.tbDataPre.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "IPS 2"))
-        item = self.tbDataPre.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "IPS 3"))
-        item = self.tbDataPre.horizontalHeaderItem(4)
-        item.setText(_translate("MainWindow", "IPS 4"))
-        item = self.tbDataPre.horizontalHeaderItem(5)
-        item.setText(_translate("MainWindow", "Fiska 1"))
-        item = self.tbDataPre.horizontalHeaderItem(6)
-        item.setText(_translate("MainWindow", "Matematika 1"))
-        item = self.tbDataPre.horizontalHeaderItem(7)
-        item.setText(_translate("MainWindow", "Fisika 2"))
-        item = self.tbDataPre.horizontalHeaderItem(8)
-        item.setText(_translate("MainWindow", "Matematika 2"))
-        item = self.tbDataPre.horizontalHeaderItem(9)
-        item.setText(_translate("MainWindow", "Algoritma Pemograman"))
-        item = self.tbDataPre.horizontalHeaderItem(10)
-        item.setText(_translate("MainWindow", "Elektronika 1"))
-        item = self.tbDataPre.horizontalHeaderItem(11)
-        item.setText(_translate("MainWindow", "Teori Sistem & Sinyal"))
-        item = self.tbDataPre.horizontalHeaderItem(12)
-        item.setText(_translate("MainWindow", "Organisasi & Arsitektur Komputer 1"))
-        item = self.tbDataPre.horizontalHeaderItem(13)
-        item.setText(_translate("MainWindow", "Sistem Digital"))
-        item = self.tbDataPre.horizontalHeaderItem(14)
-        item.setText(_translate("MainWindow", "Elektronika 2"))
-        item = self.tbDataPre.horizontalHeaderItem(15)
-        item.setText(_translate("MainWindow", "Struktur Data"))
-        item = self.tbDataPre.horizontalHeaderItem(16)
-        item.setText(_translate("MainWindow", "Matematika Diskrit"))
-        item = self.tbDataPre.horizontalHeaderItem(17)
-        item.setText(_translate("MainWindow", "Komunikasi Data"))
-        item = self.tbDataPre.horizontalHeaderItem(18)
-        item.setText(_translate("MainWindow", "Aljabar Linear"))
-        self.pbProPre.setText(_translate("MainWindow", "Mulai Proses Prediksi"))
-        self.pbCetak.setText(_translate("MainWindow", "Cetak Laporan Hasil Prediksi"))
-        self.groupBox_5.setTitle(_translate("MainWindow", "Hasil Prediksi"))
-        self.tbPrediksi.setSortingEnabled(True)
-        item = self.tbPrediksi.horizontalHeaderItem(0)
-        item.setText(_translate("MainWindow", "NIM"))
-        item = self.tbPrediksi.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "Hasil Prediksi IPK"))
-        item = self.tbPrediksi.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "Responsi"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1063</width>
+    <height>615</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="sourcesGambar.qrc">
+    <normaloff>:/Main/logo_unikom_kuning.png</normaloff>:/Main/logo_unikom_kuning.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="judul">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <stylestrategy>PreferDefault</stylestrategy>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="text">
+       <string>Menu Prediksi IPK Menggunakan ANN Backpropagation</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="indent">
+       <number>0</number>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::LinksAccessibleByMouse</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbKembali">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Kembali ke menu utama</string>
+         </property>
+         <property name="text">
+          <string>Kembali</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Input Data Akademik Mahasiswa</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="gInputData">
+         <property name="title">
+          <string>Input Data Uji</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="3" column="1">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Elektronika 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="8">
+           <widget class="QLabel" name="label_28">
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Komunikasi Data</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QLabel" name="label_11">
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Organisasi &amp; Arsitektur Komp.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="6">
+           <widget class="QLabel" name="label_24">
+            <property name="text">
+             <string>Elektronika 2</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QLabel" name="label_25">
+            <property name="text">
+             <string>Struktur Data</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="label_10">
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Teori Sistem &amp; Sinyal</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Sistem Digital</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="7">
+           <widget class="QLabel" name="label_31">
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Matematika Diskrit</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Algoritma Pemograman</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLineEdit" name="leX18">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLineEdit" name="leX9">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QLineEdit" name="leX12">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="4">
+           <widget class="QLineEdit" name="leX13">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_29">
+            <property name="text">
+             <string>Aljabar Linier</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLineEdit" name="leX11">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="5">
+           <widget class="QLineEdit" name="leX14">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="leX10">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="7">
+           <widget class="QLineEdit" name="leX16">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="8">
+           <widget class="QLineEdit" name="leX17">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="6">
+           <widget class="QLineEdit" name="leX15">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLineEdit" name="leKey">
+            <property name="placeholderText">
+             <string>102XXXXX</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="leX2">
+            <property name="placeholderText">
+             <string>0.0 - 4.0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLineEdit" name="leX4">
+            <property name="placeholderText">
+             <string>0.0 - 4.0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="leX1">
+            <property name="placeholderText">
+             <string>0.0 - 4.0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QLineEdit" name="leX5">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="leX3">
+            <property name="placeholderText">
+             <string>0.0 - 4.0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QLineEdit" name="leX6">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>IPS 2</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Fisika 2</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="7">
+           <widget class="QLineEdit" name="leX7">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="8">
+           <widget class="QLabel" name="label_26">
+            <property name="text">
+             <string>Matematika 2</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="8">
+           <widget class="QLineEdit" name="leX8">
+            <property name="placeholderText">
+             <string>0 - 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>IPS 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>NIM</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>IPS 3</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Fisika 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Matematika 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>IPS 4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="7" rowspan="2" colspan="2">
+           <widget class="QPushButton" name="pbHapus">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Menghapus semua data input pada tabel</string>
+            </property>
+            <property name="text">
+             <string>Hapus Semua Input Data</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" rowspan="2" colspan="2">
+           <widget class="QPushButton" name="pbTambah">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Tambah</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="3" rowspan="2" colspan="2">
+           <widget class="QPushButton" name="pbTmbFile">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Menambah data input dari file excel</string>
+            </property>
+            <property name="text">
+             <string>Tambah Data Dari File</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tbDataPre">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>60</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>NIM</string>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>IPS 1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>IPS 2</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>IPS 3</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>IPS 4</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Fiska 1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Matematika 1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Fisika 2</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Matematika 2</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Algoritma Pemograman</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Elektronika 1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Teori Sistem &amp; Sinyal</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Organisasi &amp; Arsitektur Komputer 1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Sistem Digital</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Elektronika 2</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Struktur Data</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Matematika Diskrit</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Komunikasi Data</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Aljabar Linear</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_2">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbProPre">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Mulai Proses Prediksi</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>Hasil Prediksi</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="tbPrediksi">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>150</number>
+         </attribute>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>25</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>NIM</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Hasil Prediksi IPK</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Responsi</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="sourcesGambar.qrc"/>
+ </resources>
+ <connections/>
+</ui>

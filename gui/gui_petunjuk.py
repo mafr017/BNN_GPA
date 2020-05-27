@@ -13,7 +13,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 520)
+        MainWindow.resize(800, 489)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -41,16 +44,16 @@ class Ui_MainWindow(object):
         self.frame.setObjectName("frame")
         self.gridLayout = QtWidgets.QGridLayout(self.frame)
         self.gridLayout.setObjectName("gridLayout")
-        self.pushButton_2 = QtWidgets.QPushButton(self.frame)
-        self.pushButton_2.setMinimumSize(QtCore.QSize(50, 50))
-        self.pushButton_2.setMaximumSize(QtCore.QSize(30, 30))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.gridLayout.addWidget(self.pushButton_2, 0, 1, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.frame)
-        self.pushButton.setMinimumSize(QtCore.QSize(50, 50))
-        self.pushButton.setMaximumSize(QtCore.QSize(30, 30))
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 0, 3, 1, 1)
+        self.pbPrevious = QtWidgets.QPushButton(self.frame)
+        self.pbPrevious.setMinimumSize(QtCore.QSize(50, 50))
+        self.pbPrevious.setMaximumSize(QtCore.QSize(30, 30))
+        self.pbPrevious.setObjectName("pbPrevious")
+        self.gridLayout.addWidget(self.pbPrevious, 0, 1, 1, 1)
+        self.pbNext = QtWidgets.QPushButton(self.frame)
+        self.pbNext.setMinimumSize(QtCore.QSize(50, 50))
+        self.pbNext.setMaximumSize(QtCore.QSize(30, 30))
+        self.pbNext.setObjectName("pbNext")
+        self.gridLayout.addWidget(self.pbNext, 0, 3, 1, 1)
         self.idxGambar = QtWidgets.QLabel(self.frame)
         self.idxGambar.setMaximumSize(QtCore.QSize(16777215, 30))
         self.idxGambar.setAlignment(QtCore.Qt.AlignCenter)
@@ -103,11 +106,12 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.Judul.setText(_translate("MainWindow", "Petunjuk Penggunaan"))
-        self.pushButton_2.setText(_translate("MainWindow", "<"))
-        self.pushButton.setText(_translate("MainWindow", ">"))
+        self.pbPrevious.setText(_translate("MainWindow", "<"))
+        self.pbNext.setText(_translate("MainWindow", ">"))
         self.idxGambar.setText(_translate("MainWindow", "Index Gambar"))
         self.Gambar.setText(_translate("MainWindow", "Gambar"))
         self.pbOk.setText(_translate("MainWindow", "OK"))
+import gui.sourcesGambar_rc
 
 
 if __name__ == "__main__":

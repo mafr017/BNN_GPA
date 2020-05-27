@@ -7,11 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>1069</width>
-    <height>627</height>
+    <height>631</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Menu Pelatihan</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="sourcesGambar.qrc">
+    <normaloff>:/Main/logo_unikom_kuning.png</normaloff>:/Main/logo_unikom_kuning.png</iconset>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -437,32 +441,6 @@
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="gExtra">
-               <property name="title">
-                <string/>
-               </property>
-               <property name="flat">
-                <bool>true</bool>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_7">
-                <item>
-                 <widget class="QPushButton" name="pbKelola">
-                  <property name="text">
-                   <string>Kelola Data Pelatihan</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pbCetak">
-                  <property name="text">
-                   <string>Cetak Hasil Pelatihan</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
              </item>
             </layout>
            </widget>
@@ -1011,6 +989,13 @@
                 <bool>false</bool>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QPushButton" name="pbKelola">
+                  <property name="text">
+                   <string>Kelola Data Pelatihan</string>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QPushButton" name="pbBaca">
                   <property name="acceptDrops">
@@ -1923,6 +1908,8 @@
   <tabstop>eTotalDLatih</tabstop>
   <tabstop>eNInp</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="sourcesGambar.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="Main">
+    <file>logo_unikom_kuning.png</file>
+    <file>prediksiIPK.png</file>
+  </qresource>
+</RCC>

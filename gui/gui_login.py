@@ -14,6 +14,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -102,9 +105,6 @@ class Ui_MainWindow(object):
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem6)
         self.leId = QtWidgets.QLineEdit(self.frame_8)
-        regex = QtCore.QRegExp("[0-9_]+")
-        validator = QtGui.QRegExpValidator(regex)
-        self.leId.setValidator(validator)
         self.leId.setMinimumSize(QtCore.QSize(200, 30))
         self.leId.setInputMethodHints(QtCore.Qt.ImhNone)
         self.leId.setMaxLength(6)
@@ -244,7 +244,7 @@ class Ui_MainWindow(object):
         self.lLogoUnikom.setMaximumSize(QtCore.QSize(100, 100))
         self.lLogoUnikom.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lLogoUnikom.setText("")
-        self.lLogoUnikom.setPixmap(QtGui.QPixmap(":/logo/logo_unikom_kuning.png"))
+        self.lLogoUnikom.setPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"))
         self.lLogoUnikom.setScaledContents(True)
         self.lLogoUnikom.setAlignment(QtCore.Qt.AlignCenter)
         self.lLogoUnikom.setWordWrap(True)
@@ -254,6 +254,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addItem(spacerItem19)
         self.verticalLayout.addWidget(self.frame_3)
         MainWindow.setCentralWidget(self.centralwidget)
+        regex = QtCore.QRegExp("[0-9_]+")
+        validator = QtGui.QRegExpValidator(regex)
+        self.leId.setValidator(validator)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -272,7 +275,7 @@ class Ui_MainWindow(object):
         self.pbLupa.setText(_translate("MainWindow", "Lupa Password atau Id"))
         self.pbRegister.setText(_translate("MainWindow", "Register"))
         self.pbPetunjuk.setText(_translate("MainWindow", "Pentunjuk Admin"))
-import gui.resourcesGambar_rc
+import gui.sourcesGambar_rc
 
 
 if __name__ == "__main__":

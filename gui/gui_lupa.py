@@ -14,6 +14,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(794, 599)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -128,6 +131,8 @@ class Ui_MainWindow(object):
         self.pbKirim = QtWidgets.QPushButton(self.frame_6)
         self.pbKirim.setMinimumSize(QtCore.QSize(300, 35))
         self.pbKirim.setMaximumSize(QtCore.QSize(300, 500))
+        self.pbKirim.setAutoDefault(False)
+        self.pbKirim.setDefault(False)
         self.pbKirim.setObjectName("pbKirim")
         self.horizontalLayout_5.addWidget(self.pbKirim)
         spacerItem11 = QtWidgets.QSpacerItem(100, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -160,7 +165,7 @@ class Ui_MainWindow(object):
         self.lLogoUnikom.setMaximumSize(QtCore.QSize(100, 100))
         self.lLogoUnikom.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lLogoUnikom.setText("")
-        self.lLogoUnikom.setPixmap(QtGui.QPixmap(":/logo/logo_unikom_kuning.png"))
+        self.lLogoUnikom.setPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"))
         self.lLogoUnikom.setScaledContents(True)
         self.lLogoUnikom.setAlignment(QtCore.Qt.AlignCenter)
         self.lLogoUnikom.setWordWrap(True)
@@ -184,7 +189,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "E-mail"))
         self.leEmail.setPlaceholderText(_translate("MainWindow", "anda@email.com"))
         self.pbKirim.setText(_translate("MainWindow", "Kirim Bantuan"))
-import gui.resourcesGambar_rc
+import gui.sourcesGambar_rc
 
 
 if __name__ == "__main__":
