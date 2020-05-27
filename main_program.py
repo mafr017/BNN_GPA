@@ -53,7 +53,7 @@ class FormMain(QMainWindow):
         #membuat window form
         self.sgui = gui_main.Ui_MainWindow()
         self.sgui.setupUi(self)
-
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1")
         kontrolDB.konek(self) #panggil fungsi koneksi server
 
         #setup status bar
@@ -102,7 +102,7 @@ class FormLogin(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_login.Ui_MainWindow()
         self.sgui.setupUi(self)
-        
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Login")
         kontrolDB.konek(self)
 
         self.sgui.pbLogin.clicked.connect(self.Login)
@@ -167,6 +167,7 @@ class FormLupa(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_lupa.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Lupa Password atau Id")
 
         self.sgui.pbKirim.clicked.connect(self.Kirim)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
@@ -206,7 +207,6 @@ class FormLupa(QMainWindow):
 
     def Kembali(self):
         self.tampilForm = FormLogin()
-        self.madb.close()
         self.close()
 
 class FormRegister(QMainWindow):
@@ -215,6 +215,7 @@ class FormRegister(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_register.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Registrasi")
 
         kontrolDB.konek(self)
 
@@ -351,16 +352,92 @@ class FormPetunjuk(FormMain, QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_petunjuk.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Petunjuk Penggunaan")
+
+        self.petunjuk = petunjuk
 
         if petunjuk == 1:
             self.sgui.Judul.setText(f"Petunjuk Penggunaan Prediksi")
+            self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-9-prediksi.PNG"))
+            self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa")
+            self.sgui.pbNext.setHidden(True)
+            self.sgui.pbPrevious.setHidden(True)
         elif petunjuk == 2:
             self.sgui.Judul.setText(f"Petunjuk Admin Penggunaan Pelatihan")
+            self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-2-login.PNG"))
+            self.sgui.idxGambar.setText("Petunjuk admin proses login (1/5)")
+            self.gmbrke = 1
         else:
             print("Terjadi Kesalahan")
 
+        self.sgui.pbNext.clicked.connect(self.nextGambar)
+        self.sgui.pbPrevious.clicked.connect(self.prevGambar)
         self.sgui.pbOk.clicked.connect(self.keluar)
         self.show()
+    
+    def nextGambar(self):
+        try:
+            petunjuk = self.petunjuk
+            if petunjuk == 2:
+                if self.gmbrke == 1:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-3-register.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses registrasi (2/5)")
+                    self.gmbrke = 2
+                elif self.gmbrke == 2:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-4-lupa.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses bantuan lupa password atau id (3/5)")
+                    self.gmbrke = 3
+                elif self.gmbrke == 3:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-6-pelatihan.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses pelatihan BNN (4/5)")
+                    self.gmbrke = 4
+                elif self.gmbrke == 4:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-7-kelola.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses kelola data pelatihan (5/5)")
+                    self.gmbrke = 5
+                elif self.gmbrke == 5:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-2-login.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses login (1/5)")
+                    self.gmbrke = 1
+                else:
+                    self.sgui.Gambar.setText("Error")
+            else:
+                print("Terjadi Kesalahan")
+            print(self.gmbrke)
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+    
+    def prevGambar(self):
+        try:
+            petunjuk = self.petunjuk
+            if petunjuk == 2:
+                if self.gmbrke == 1:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-7-kelola.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses kelola data pelatihan (5/5)")
+                    self.gmbrke = 5
+                elif self.gmbrke == 5:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-6-pelatihan.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses pelatihan BNN (4/5)")
+                    self.gmbrke = 4
+                elif self.gmbrke == 4:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-4-lupa.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses bantuan lupa password atau id (3/5)")
+                    self.gmbrke = 3
+                elif self.gmbrke == 3:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-3-register.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses registrasi (2/5)")
+                    self.gmbrke = 2
+                elif self.gmbrke == 2:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-2-login.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk admin proses login (1/5)")
+                    self.gmbrke = 1
+                else:
+                    self.sgui.Gambar.setText("Error")
+            else:
+                print("Terjadi Kesalahan")
+            print(self.gmbrke)
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
     
     def keluar(self):
         self.close()
@@ -388,7 +465,7 @@ class FormPelatihanJST(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_pelatihan.Ui_MainMenu()
         self.sgui.setupUi(self)
-        self.setWindowTitle("Prediksi IPK Mahasiswa Sistem Komputer S1 - JST BACKPROPAGATION")
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Pelatihan")
         kontrolDB.konek(self)
 
         #setup status bar
@@ -423,7 +500,6 @@ class FormPelatihanJST(QMainWindow):
         self.sgui.pbPengujian.clicked.connect(self.ProPengujian)
         self.sgui.pbDetailG_2.clicked.connect(self.DetailGrafik_2)
         self.sgui.pbKelola.clicked.connect(self.tampilKelola)
-        self.sgui.pbCetak.clicked.connect(self.Cetak)
         self.sgui.pbTambah.clicked.connect(self.TambahAdmin)
         self.sgui.pbLogout.clicked.connect(self.LogOut)
 
@@ -568,12 +644,6 @@ class FormPelatihanJST(QMainWindow):
             cur.execute("SELECT * FROM data_latih")
             alda = cur.fetchall()
             cur.close()
-
-            """ # membaca file CSV data input dari penyimpanan lokal
-            path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
-            namafile = path[0]
-            np.set_printoptions(suppress=True, linewidth=np.inf)
-            alda = pd.read_excel(namafile, header=1) """
             
             data_latih = np.array(alda) # simpan data kedalam bentuk list/array
 
@@ -624,12 +694,6 @@ class FormPelatihanJST(QMainWindow):
                 cur.execute("SELECT * FROM data_uji")
                 alda = cur.fetchall()
                 cur.close()
-                
-                """ # membaca file CSV data input dari penyimpanan lokal
-                path = QFileDialog.getOpenFileName(self, 'Silahkan pilih file data pelatihan', '', "XLSX files (*.xlsx)")
-                namafile = path[0]
-                np.set_printoptions(suppress=True, linewidth=np.inf)
-                data_uji = pd.read_excel(namafile, header=1) """
 
                 # simpan data kedalam bentuk list/array
                 data_uji = np.array(alda)
@@ -1152,12 +1216,6 @@ class FormPelatihanJST(QMainWindow):
         msg.setIcon(QMessageBox.Information)
         msg.exec_()
 
-    def Cetak(self):
-        try:
-            print("Berhasil Cetak")
-        except:
-            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
-
     def LogOut(self):
         self.tampilForm = FormMain()
         self.madb.close()
@@ -1169,6 +1227,7 @@ class FormKelola(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_kelola.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Kelola Data Pelatihan")
         self.namaAdmin = namaAdmin
         self.sgui.lAdmin.setText(str(namaAdmin))
         kontrolDB.konek(self) #panggil fungsi koneksi server
@@ -1937,7 +1996,7 @@ class FormPrediksi(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_prediksi.Ui_MainWindow()
         self.sgui.setupUi(self)
-
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Prediksi")
         kontrolDB.konek(self) #panggil fungsi koneksi server
 
         #setup status bar
@@ -1956,6 +2015,12 @@ class FormPrediksi(QMainWindow):
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+        header2 = self.sgui.tbDataPre.horizontalHeader()
+        for i in range(5):
+            header2.setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
+        for i in range(5, 19):
+            header2.setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
 
         np.set_printoptions(suppress=True, linewidth=np.inf)
         self.bentukAwal = np.zeros((1,19))
