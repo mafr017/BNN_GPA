@@ -12,7 +12,7 @@ Prediksi IPK menggunakan Algoritma Backpropagation
 * Epoch         = 200
 ### Requirements
 * Python version: 3.7.x
-* pip modules: numpy, PyQt5, pandas, matplotlib, MySQL
+* pip modules: pandas, numpy, matplotlib, MySQL, PyQt5, smtplib
 ### Developtment Tools
 * Visual Studio Code
 * Qt Designer
