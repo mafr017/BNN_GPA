@@ -3,7 +3,7 @@ import sys
 from math import *
 
 class DPreparation:
-    #pendefinisian fungsi untuk mengacak bobot awal
+    # pendefinisian fungsi untuk mengacak bobot awal
     def Acakbobot(self, n_input, n_hidden, n_output):
         try:
             '''membuat dimensi matriks bobot input ke hidden --- bobot hidden ke output'''
@@ -16,7 +16,7 @@ class DPreparation:
 
             '''bias diberi niali 0,1'''
             bobot_v[0, :]=0.1
-            bobot_w[0, :]=0.1 
+            bobot_w[0, :]=0.1
 
             '''memindahkan array nilai random dari temp ke array bobot'''
             bobot_v[1:n_input+1, :] = tmp_v
@@ -27,10 +27,10 @@ class DPreparation:
             print('Terjadi kesalahan pada proses pembuatan bobot awal',sys.exc_info()[0])
 
 class DTransformation:
-    #pendefinisian fungsi untuk melakukan normalisasi data
+    # pendefinisian fungsi untuk melakukan normalisasi data
     def Normalisasi(self, data):
         try:
-            n_data = data.shape[0] #mengetahui ukuran matriks/array
+            n_data = data.shape[0] # mengetahui ukuran matriks/array
             datamaks = max(data)
             datamin = min(data)
             '''
@@ -38,24 +38,24 @@ class DTransformation:
             for i in range(n_data):
                 x[0, i] = round((data[i]-datamin)/(datamaks-datamin),3)
             '''
-            x = np.zeros((n_data, 1)) #memetakan matriks data yang akan digunakan
-            for i in range(n_data): #menghitung nilai normalisasi setiap variabel/parameter
+            x = np.zeros((n_data, 1)) # memetakan matriks data yang akan digunakan
+            for i in range(n_data): # menghitung nilai normalisasi setiap variabel/parameter
                 x[i, 0] = round((data[i]-datamin)/(datamaks-datamin), 6)
 
             return x
         except:
             print ('Terjadi kesalahan pada proses normalisasi data',sys.exc_info()[0])
 
-    #pendefinisian fungsi untuk melakukan denormalisasi data
+    # pendefinisian fungsi untuk melakukan denormalisasi data
     def Denormalisasi(self, data, datamin, datamax):
         try:
-            x = round(((data*(datamax-datamin))+datamin), 6) #menghitung nilai denormalisasi dari data yang dihasilkan
+            x = round(((data*(datamax-datamin))+datamin), 6) # menghitung nilai denormalisasi dari data yang dihasilkan
             return x
         except:
             print('Terjadi kesalahan pada proses denormalisasi data',sys.exc_info()[0])
 
 class JaringanSyarafTiruan:
-    #pendefinisian fungsi untuk menghitung feedforward neuron hidden dari input layer
+    # pendefinisian fungsi untuk menghitung feedforward neuron hidden dari input layer
     def input_hidden(self, data, n_hidden, v):
         try:
             n_data = data.shape[0]
@@ -68,13 +68,14 @@ class JaringanSyarafTiruan:
                     tmp = tmp + v[i+1, j]*data[i]
                 
                 tmp = v[0, j] + tmp
-                z[0, j] = round(1/(1+np.exp(-tmp)), 6)
+
+                z[0, j] = round(1/(1+np.exp(-tmp)), 6) # Sigmoid
 
             return z
         except:
             print('Terjadi kesalahan pada proses menghitung feedforward (dari input ke hidden layer)',sys.exc_info()[0])
 
-    #pendefinisian fungsi untuk menghitung feedforward neuron output dari hidden layer
+    # pendefinisian fungsi untuk menghitung feedforward neuron output dari hidden layer
     def hidden_output(self, z, n_output, w):
         try:
             [baris, kolom] = z.shape
@@ -85,23 +86,24 @@ class JaringanSyarafTiruan:
                     tmp = tmp+w[j+1, k]*z[k, j]
 
                 tmp = w[0, k] + tmp
-                y[0, k] = round(1/(1+np.exp(-tmp)), 6)
+
+                y[0, k] = round(1/(1+np.exp(-tmp)), 6) # sigmoid
 
             return y
         except:
             print('Terjadi kesalahan pada proses menghitung feedforward (dari hidden ke output layer)',sys.exc_info()[0])
 
-    #pendefinisian fungsi untuk melakukan feedforward
+    # pendefinisian fungsi untuk melakukan feedforward
     def Feedforward(self, data, v, w, n_hidden, n_output):
         try:
-            z = self.input_hidden(data, n_hidden, v) #panggil fungsi untuk menghitung feedforward input-hidden
-            y = self.hidden_output(z, n_output, w) #panggil fungsi untuk menghitung feedforward hidden-output
+            z = self.input_hidden(data, n_hidden, v) # panggil fungsi untuk menghitung feedforward input-hidden
+            y = self.hidden_output(z, n_output, w) # panggil fungsi untuk menghitung feedforward hidden-output
 
             return [z, y]
         except:
             print('Terjadi kesalahan pada proses feedforward',sys.exc_info()[0])
     
-    #pendefinisian fungsi untuk menghitung backpropagation pembaruan bobot W
+    # pendefinisian fungsi untuk menghitung backpropagation pembaruan bobot W
     def output_hidden(self, target_output, y, z, alpha, w):
         try:
             baris, kolom = y.shape
@@ -127,7 +129,7 @@ class JaringanSyarafTiruan:
         except:
             print('Terjadi kesalahan pada proses backpropagation (dari output ke hidden layer)',sys.exc_info()[0])
     
-    #pendefinisian fungsi untuk menghitung backpropagation pembaruan bobot V
+    # pendefinisian fungsi untuk menghitung backpropagation pembaruan bobot V
     def hidden_input(self, target_output, y, data, alpha, z, w, v):
         try:
             baris, kolom = y.shape
@@ -165,11 +167,11 @@ class JaringanSyarafTiruan:
         except:
             print('Terjadi kesalahan pada proses backpropagation (dari hidden ke input layer)',sys.exc_info()[0])
         
-    #pendefinisian fungsi untuk melakukan backpropagation
+    # pendefinisian fungsi untuk melakukan backpropagation
     def Backpropagation(self, target_output, y, data, alpha, z, w, v):
         try:
-            w_baru = self.output_hidden(target_output, y, z, alpha, w) #panggil fungsi untuk menghitung backpropagation output-hidden
-            v_baru = self.hidden_input(target_output, y, data, alpha, z, w, v) #panggil fungsi untuk menghitung backpropagation hidden-input
+            w_baru = self.output_hidden(target_output, y, z, alpha, w) # panggil fungsi untuk menghitung backpropagation output-hidden
+            v_baru = self.hidden_input(target_output, y, data, alpha, z, w, v) # panggil fungsi untuk menghitung backpropagation hidden-input
 
             return [w_baru, v_baru]
         except:
