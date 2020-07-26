@@ -12,6 +12,8 @@ from PyQt5.uic import *
 from PyQt5 import *
 from JST import *
 
+from datetime import datetime
+
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar2QT)
@@ -27,6 +29,7 @@ import gui.gui_main as gui_main
 import gui.gui_pelatihan as gui_pelatihan
 import gui.gui_petunjuk as gui_petunjuk
 import gui.gui_prediksi as gui_prediksi
+import gui.gui_prediksi_db as gui_prediksi_db
 import gui.gui_register as gui_register
 
 import sendEmail as sE
@@ -37,7 +40,7 @@ class kontrolDB:
 
     def konek(self):
         try:
-            madb = mycon.connect(host="localhost", user="root", password="", database="gpa_bnn")
+            madb = mycon.connect(host="localhost", user="root", password="", database="ipkprediksi_fix")
             self.madb = madb
             if madb.is_connected():
                 db_info = madb.get_server_info()
@@ -71,6 +74,7 @@ class FormMain(QMainWindow):
         self.sgui.pbPetunjuk.clicked.connect(self.tampilPetunjuk)
         self.sgui.pbLogin.clicked.connect(self.tampilLogin)
         self.sgui.pbMulaiPre.clicked.connect(self.tampilPrediksi)
+        self.sgui.pbMulaiPreDB.clicked.connect(self.tampilPrediksiDB)
         self.sgui.pbRegister.clicked.connect(self.tampilRegister)
         self.show()
    
@@ -88,7 +92,10 @@ class FormMain(QMainWindow):
 
     def tampilPrediksi(self):
         self.tampilForm = FormPrediksi()
-        self.madb.close()
+        self.close()
+        
+    def tampilPrediksiDB(self):
+        self.tampilForm = FormPrediksiDB()
         self.close()
 
     def tampilRegister(self):
@@ -339,6 +346,7 @@ class FormAbout(QMainWindow):
         QMainWindow.__init__(self)
         self.sgui = gui_about.Ui_MainWindow()
         self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - About Me")
 
         self.sgui.pbOk.clicked.connect(self.keluar)
         self.show()
@@ -359,9 +367,8 @@ class FormPetunjuk(FormMain, QMainWindow):
         if petunjuk == 1:
             self.sgui.Judul.setText(f"Petunjuk Penggunaan Prediksi")
             self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-9-prediksi.PNG"))
-            self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa")
-            self.sgui.pbNext.setHidden(True)
-            self.sgui.pbPrevious.setHidden(True)
+            self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa (1/2)")
+            self.gmbrke = 1
         elif petunjuk == 2:
             self.sgui.Judul.setText(f"Petunjuk Admin Penggunaan Pelatihan")
             self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-2-login.PNG"))
@@ -378,7 +385,16 @@ class FormPetunjuk(FormMain, QMainWindow):
     def nextGambar(self):
         try:
             petunjuk = self.petunjuk
-            if petunjuk == 2:
+            if petunjuk == 1:
+                if self.gmbrke == 1:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-10-prediksi-db.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa Input Dari Database (2/2)")
+                    self.gmbrke = 2
+                elif self.gmbrke == 2:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-9-prediksi.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa (1/2)")
+                    self.gmbrke = 1
+            elif petunjuk == 2:
                 if self.gmbrke == 1:
                     self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-3-register.PNG"))
                     self.sgui.idxGambar.setText("Petunjuk admin proses registrasi (2/5)")
@@ -403,14 +419,22 @@ class FormPetunjuk(FormMain, QMainWindow):
                     self.sgui.Gambar.setText("Error")
             else:
                 print("Terjadi Kesalahan")
-            print(self.gmbrke)
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
     
     def prevGambar(self):
         try:
             petunjuk = self.petunjuk
-            if petunjuk == 2:
+            if petunjuk == 1:
+                if self.gmbrke == 1:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-10-prediksi-db.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa Input Dari Database (2/2)")
+                    self.gmbrke = 2
+                elif self.gmbrke == 2:
+                    self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-9-prediksi.PNG"))
+                    self.sgui.idxGambar.setText("Petunjuk Penggunaan Proses Prediksi IPK Mahasiswa (1/2)")
+                    self.gmbrke = 1
+            elif petunjuk == 2:
                 if self.gmbrke == 1:
                     self.sgui.Gambar.setPixmap(QtGui.QPixmap("gambar\Menu-7-kelola.PNG"))
                     self.sgui.idxGambar.setText("Petunjuk admin proses kelola data pelatihan (5/5)")
@@ -435,7 +459,6 @@ class FormPetunjuk(FormMain, QMainWindow):
                     self.sgui.Gambar.setText("Error")
             else:
                 print("Terjadi Kesalahan")
-            print(self.gmbrke)
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
     
@@ -807,9 +830,6 @@ class FormPelatihanJST(QMainWindow):
                     incol = "n1"
                     crecol = "n1 FLOAT NOT NULL"
                     inval = f"%s"
-                    print(incol,"\n")
-                    print(inval,"\n")
-                    print(crecol,"\n")
                     cur = self.madb.cursor()
                     cur.execute(f"CREATE TABLE tb_bobotv ({crecol})")
                     cur.close()
@@ -953,7 +973,7 @@ class FormPelatihanJST(QMainWindow):
                 cur.execute("TRUNCATE TABLE tb_bobotw")
                 cur.close()
                 cur = self.madb.cursor()
-                cur.execute("SELECT dincol, dcrecol, dinsval FROM tb_params WHERE id = 1")
+                cur.execute("tb_prediksi dincol, dcrecol, dinsval FROM tb_params WHERE id = 1")
                 alda = cur.fetchall()
                 cur.close()
                 sqll1 = f"INSERT INTO tb_bobotv ({alda[0][0]}) VALUES ({alda[0][2]})"
@@ -1070,6 +1090,8 @@ class FormPelatihanJST(QMainWindow):
                 # memetakan array/matriks/list
                 hasil_prediksi = np.zeros((n_datauji, 1))
                 error = np.zeros((n_datauji, 1))
+                errorrs = np.zeros((n_datauji, 1))
+                akurasis = np.zeros((n_datauji, 1))
                 mse = np.zeros((n_datauji, 1))
                 kum_error = np.zeros((n_datauji, 1))
                 hslprediksi_denormalisasi = np.zeros((n_datauji,1))
@@ -1095,9 +1117,11 @@ class FormPelatihanJST(QMainWindow):
                     datasebenarnya = outsebenarnya_denormalisasi[i,0]
                     errorhasil = abs(datasebenarnya-hasiljst)
                     errorhasil = round(errorhasil, 6)
+                    errorrs[i, 0] = errorhasil
                     kum_error[i,0] = abs((datasebenarnya-hasiljst)/datasebenarnya)
                     akurasi = 100 - (kum_error[i,0] * 100)
                     akurasi = float(akurasi)
+                    akurasis[i, 0] = akurasi
 
                     # menampilkan hasil ke dalam tabel
                     self.sgui.tbHasilUji.setItem(i,0,QTableWidgetItem(str(int(data_uji[i,0]))))
@@ -1105,6 +1129,16 @@ class FormPelatihanJST(QMainWindow):
                     self.sgui.tbHasilUji.setItem(i,2,QTableWidgetItem(str(round(datasebenarnya, 2))))
                     self.sgui.tbHasilUji.setItem(i,3,QTableWidgetItem(str(errorhasil)))
                     self.sgui.tbHasilUji.setItem(i,4,QTableWidgetItem(f"{akurasi:0.2f}"))
+                
+                """ cura = self.madb.cursor()
+                    cura.execute("TRUNCATE TABLE tb_hasil")
+                    cura.close()
+                    for i in range(n_datauji):
+                        cur = self.madb.cursor()
+                        cur.execute("INSERT INTO tb_hasil (NIM, hasil_jst, target, errorr, akurasi) VALUES (%s, %s, %s, %s, %s)", (int(data_uji[i,0]), hslprediksi_denormalisasi[i,0], outsebenarnya_denormalisasi[i,0], errorrs[i, 0], akurasis[i, 0],))
+                        self.madb.commit()
+                        cur.close()
+                    self.madb.close() """
 
                 rata2akurasi = 100 - ((sum(kum_error)/n_datauji) * 100) # menghitung MAPE / akurasi
                 rata2akurasi = float(rata2akurasi[0])
@@ -1119,7 +1153,7 @@ class FormPelatihanJST(QMainWindow):
                 time_stop = (time.perf_counter() - time_start)
                 self.sgui.eWaktu_2.setText(str(round(time_stop, 2)))
                 self.sgui.eMSE_2.setText(str(mse))
-                self.sgui.eAkurasi.setText(f"{rata2akurasi:0.2f}")
+                self.sgui.eAkurasi.setText(f"{rata2akurasi:0.3f}")
                 
                 # menyimpan data hasil bobot pelatihan ke dalam variabel parrent
                 self.mseUji = mse
@@ -1248,7 +1282,9 @@ class FormKelola(QMainWindow):
         self.sgui.pbLatih.clicked.connect(self.bacaDataLatih)
         self.sgui.tbDataPre.cellClicked.connect(self.pilihData)
         self.sgui.pbLatih.animateClick()
+
         self.sgui.pbUji.clicked.connect(self.bacaDataUji)
+        self.sgui.pbPrediksi.clicked.connect(self.bacaDataPrediksi)
         self.sgui.pbHapusOne.clicked.connect(self.hapusSatu)
         self.sgui.pbHapusAll.clicked.connect(self.hapusSemuaData)
         self.sgui.pbUpdate.clicked.connect(self.ubahData)
@@ -1262,7 +1298,6 @@ class FormKelola(QMainWindow):
     def cariData(self):
         try:
             statData = self.statData
-            print(statData)
 
             lnim = self.sgui.leNIM.text()
             lx1 = self.sgui.leX1.text()
@@ -1490,7 +1525,6 @@ class FormKelola(QMainWindow):
                         self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_latih[i,19]))) # membaca parameter target(IPK)
                     
                     print(f"Banyak data yang terfilter: {idds}")
-                    print("Data yang terfilter:\n",idd)
                     bSql = ""
                 elif statData == 2:
                     cur = self.madb.cursor()
@@ -1514,7 +1548,6 @@ class FormKelola(QMainWindow):
                         self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_uji[i,19]))) # membaca parameter target(IPK)
 
                     print(f"Banyak data yang terfilter: {idds}")
-                    print("Data yang terfilter:\n",idd)
                     bSql = ""
                 else:
                     print("Error")
@@ -1584,6 +1617,7 @@ class FormKelola(QMainWindow):
                 self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_latih[i,19]))) # membaca parameter target(IPK)
             self.statData = 1;
             self.sgui.pbUji.setChecked(False)
+            self.sgui.pbPrediksi.setChecked(False)
             self.sgui.glistdata.setTitle("Tabel Data Latih")
 
             self.sgui.lbdata.setText(str(f"Jumlah Data: {n_datalatih}"))
@@ -1616,16 +1650,49 @@ class FormKelola(QMainWindow):
                 self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_uji[i,19]))) # membaca parameter target(IPK)
             self.statData = 2;
             self.sgui.pbLatih.setChecked(False)
+            self.sgui.pbPrediksi.setChecked(False)
             self.sgui.glistdata.setTitle("Tabel Data Uji")
 
             self.sgui.lbdata.setText(str(f"Jumlah Data: {n_datauji}"))
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
+    def bacaDataPrediksi(self):
+        try:
+            self.sgui.pbPrediksi.setChecked(True)
+            # membaca data latih dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_prediksi")
+            alda = cur.fetchall()
+            cur.close()
+            data_prediksi = np.array(alda) # simpan data kedalam bentuk list/array
+            n_prediksi = len(data_prediksi)
+
+            # menampilkan data latih pada tabel
+            self.sgui.tbDataPre.setRowCount(0)
+            self.sgui.tbDataPre.setRowCount(n_prediksi)
+            for i in range(n_prediksi):
+                self.sgui.tbDataPre.setItem(i,0,QTableWidgetItem(str(int(data_prediksi[i,0])))) # membaca parameter NIM
+                for j in range(4):
+                    k = j + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(data_prediksi[i,k]))) # membaca paramater input latih x1-x18
+                for l in range(4, 18):
+                    k = l + 1
+                    self.sgui.tbDataPre.setItem(i,k,QTableWidgetItem(str(int(data_prediksi[i,k])))) # membaca paramater input latih x1-x18
+                self.sgui.tbDataPre.setItem(i,19,QTableWidgetItem(str(data_prediksi[i,19]))) # membaca parameter target(IPK)
+            self.statData = 3;
+            self.sgui.pbLatih.setChecked(False)
+            self.sgui.pbUji.setChecked(False)
+            self.sgui.glistdata.setTitle("Tabel Data Prediksi")
+
+            self.sgui.lbdata.setText(str(f"Jumlah Data: {n_prediksi}"))
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
     def tambahData(self):
         try:
             statData = self.statData
-            print(statData)
 
             lnim = self.sgui.leNIM.text()
             lx1 = self.sgui.leX1.text()
@@ -1689,6 +1756,26 @@ class FormKelola(QMainWindow):
                         cur.close()
                         print(f"Berhasil Menambahkan data uji {lnim}")
                         self.bacaDataUji()
+                elif statData == 3:
+                    cur = self.madb.cursor()
+                    cur.execute(f"SELECT * FROM data_prediksi WHERE NIM = {lnim}")
+                    idd = cur.fetchall()
+                    cur.close()
+                    idds = len(idd)
+                    if idds > 0:
+                        print("NIM sudah ada di dalam database!")
+                        msg = QMessageBox()
+                        msg.setWindowTitle("Proses Dibatalakan!")
+                        msg.setText("Proses tambah data dibatalkan, karena NIM sudah terdaftar di database!")
+                        msg.setIcon(QMessageBox.Critical)
+                        msg.exec_()
+                    else:
+                        cur = self.madb.cursor()
+                        cur.execute("INSERT INTO data_prediksi (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, ipk) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(lnim, lx1, lx2, lx3, lx4, lx5, lx6, lx7, lx8, lx9, lx10, lx11, lx12, lx13, lx14, lx15, lx16, lx17, lx18, lipk,))
+                        self.madb.commit()
+                        cur.close()
+                        print(f"Berhasil Menambahkan data prediksi {lnim}")
+                        self.bacaDataPrediksi()
                 else:
                     print("Error")
             else:
@@ -1722,6 +1809,11 @@ class FormKelola(QMainWindow):
             
             lnim = lx1 = lx2 = lx3 = lx4 = lx5 = lx6 = lx7 = lx8 = lx9 = lx10 = lx11 = lx12 = lx13 = lx14 = lx15 = lx16 = lx17 = lx18 = lipk = None
         except:
+            msg = QMessageBox()
+            msg.setWindowTitle("Proses Dibatalakan!")
+            msg.setText("Terjadi kesalahan sistem, proses tambah data dibatalkan!")
+            msg.setIcon(QMessageBox.Critical)
+            msg.exec_()
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
     def bersihkanInputan(self):
@@ -1749,7 +1841,6 @@ class FormKelola(QMainWindow):
     def tambahDataFile(self):
         try:
             statData = self.statData
-            print(statData)
             
             if statData == 1:
                 teks = "latih"
@@ -1757,6 +1848,10 @@ class FormKelola(QMainWindow):
             elif statData == 2:
                 teks = "uji"
                 tb = "data_uji"
+                tb = "data_latih"
+            elif statData == 3:
+                teks = "prediksi"
+                tb = "data_prediksi"
             else:
                 print("Error")
             
@@ -1764,7 +1859,7 @@ class FormKelola(QMainWindow):
             path = QFileDialog.getOpenFileName(self, f'Silahkan pilih file data {teks}', '', "XLSX files (*.xlsx)")
             namafile = path[0]
             np.set_printoptions(suppress=True, linewidth=np.inf)
-            data = pd.read_excel(namafile, header=1)
+            data = pd.read_excel(namafile, header=0)
             data = np.array(data) # simpan data kedalam bentuk list/array
             dataa = np.around(data,2)
             in_data = data.tolist()
@@ -1781,6 +1876,9 @@ class FormKelola(QMainWindow):
                 self.bacaDataLatih()
             elif statData == 2:
                 self.bacaDataUji()
+                self.bacaDataLatih()
+            elif statData == 3:
+                self.bacaDataPrediksi()
             else:
                 print("Error")
             
@@ -1788,6 +1886,14 @@ class FormKelola(QMainWindow):
 
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()[1]}')
+
+            ero = str(sys.exc_info()[1])
+            if "Duplicate" in ero:
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Terdapat duplikasi data, proses tambah data dibatalkan!")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
 
     def hapusSatu(self):
         try:
@@ -1802,6 +1908,11 @@ class FormKelola(QMainWindow):
                     judul = "Uji"
                     tb = "data_uji"
                     self.bacaDataUji()
+                    self.bacaDataLatih()
+                elif statData == 3:
+                    judul = "Prediksi"
+                    tb = "data_prediksi"
+                    self.bacaDataPrediksi()
                 else:
                     print("Error")
 
@@ -1825,6 +1936,11 @@ class FormKelola(QMainWindow):
                         cura.execute(f"DELETE FROM data_uji WHERE NIM = {fnim}")
                         self.madb.commit()
                         cura.close()
+                    elif tb == "data_prediksi":
+                        cura = self.madb.cursor()
+                        cura.execute(f"DELETE FROM data_prediksi WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
                     else:
                         print("error")
 
@@ -1832,6 +1948,8 @@ class FormKelola(QMainWindow):
                         self.bacaDataLatih()
                     elif statData == 2:
                         self.bacaDataUji()
+                    elif statData == 3:
+                        self.bacaDataPrediksi()
                     else:
                         print("Error")
                 else:
@@ -1878,6 +1996,10 @@ class FormKelola(QMainWindow):
                     judul = "Uji"
                     tb = "data_uji"
                     self.bacaDataUji()
+                elif statData == 3:
+                    judul = "Prediksi"
+                    tb = "data_prediksi"
+                    self.bacaDataPrediksi()
                 else:
                     print("Error")
 
@@ -1901,6 +2023,11 @@ class FormKelola(QMainWindow):
                         cura.execute(f"UPDATE data_uji set x1 = {fx1}, x2 = {fx2}, x3 = {fx3}, x4 = {fx4}, x5 = {fx5}, x6 = {fx6}, x7 = {fx7}, x8 = {fx8}, x9 = {fx9}, x10 = {fx10}, x11 = {fx11}, x12 = {fx12}, x13 = {fx13}, x14 = {fx14}, x15 = {fx15}, x16 = {fx16}, x17 = {fx17}, x18 = {fx18}, ipk = {fipk} WHERE NIM = {fnim}")
                         self.madb.commit()
                         cura.close()
+                    elif tb == "data_prediksi":
+                        cura = self.madb.cursor()
+                        cura.execute(f"UPDATE data_prediksi set x1 = {fx1}, x2 = {fx2}, x3 = {fx3}, x4 = {fx4}, x5 = {fx5}, x6 = {fx6}, x7 = {fx7}, x8 = {fx8}, x9 = {fx9}, x10 = {fx10}, x11 = {fx11}, x12 = {fx12}, x13 = {fx13}, x14 = {fx14}, x15 = {fx15}, x16 = {fx16}, x17 = {fx17}, x18 = {fx18}, ipk = {fipk} WHERE NIM = {fnim}")
+                        self.madb.commit()
+                        cura.close()
                     else:
                         print("error")
 
@@ -1908,6 +2035,8 @@ class FormKelola(QMainWindow):
                         self.bacaDataLatih()
                     elif statData == 2:
                         self.bacaDataUji()
+                    elif statData == 3:
+                        self.bacaDataPrediksi()
                     else:
                         print("Error")
                 else:
@@ -1916,7 +2045,7 @@ class FormKelola(QMainWindow):
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Proses Dibatalakan!")
-                msg.setText("Proses hapus dibatalkan! Harap isi terlebih dahulu form NIM dengan data yang akan dihapus!")
+                msg.setText("Proses ubah dibatalkan! Harap isi terlebih dahulu form NIM dengan data yang akan diubah!")
                 msg.setIcon(QMessageBox.Critical)
                 msg.exec_()
 
@@ -1927,7 +2056,6 @@ class FormKelola(QMainWindow):
     def hapusSemuaData(self):
         try:
             statData = self.statData
-            print(statData)
             
             if statData == 1:
                 judul = "Latih"
@@ -1937,6 +2065,10 @@ class FormKelola(QMainWindow):
                 judul = "Uji"
                 tb = "data_uji"
                 self.bacaDataUji()
+            elif statData == 3:
+                judul = "Prediksi"
+                tb = "data_prediksi"
+                self.bacaDataPrediksi()
             else:
                 print("Error")
 
@@ -1957,6 +2089,10 @@ class FormKelola(QMainWindow):
                     cura = self.madb.cursor()
                     cura.execute("TRUNCATE TABLE data_uji")
                     cura.close()
+                elif tb == "data_prediksi":
+                    cura = self.madb.cursor()
+                    cura.execute("TRUNCATE TABLE data_prediksi")
+                    cura.close()
                 else:
                     print("error")
 
@@ -1964,6 +2100,8 @@ class FormKelola(QMainWindow):
                     self.bacaDataLatih()
                 elif statData == 2:
                     self.bacaDataUji()
+                elif statData == 3:
+                    self.bacaDataPrediksi()
                 else:
                     print("Error")
             else:
@@ -2011,11 +2149,6 @@ class FormPrediksi(QMainWindow):
 
         self.madb.close()
 
-        header = self.sgui.tbPrediksi.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-
         header2 = self.sgui.tbDataPre.horizontalHeader()
         for i in range(5):
             header2.setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
@@ -2031,9 +2164,10 @@ class FormPrediksi(QMainWindow):
         self.sgui.pbHapus.clicked.connect(self.hapusSemuaData)
         self.sgui.pbProPre.clicked.connect(self.mulaiPrediksi)
         self.sgui.pbKembali.clicked.connect(self.Kembali)
+        self.sgui.pbCari.clicked.connect(self.cariDataPred)
+        self.sgui.pbReset.clicked.connect(self.resetData)
         self.statData = 0
         self.show()
-    
     
     def bacaData(self):
         try:
@@ -2142,7 +2276,7 @@ class FormPrediksi(QMainWindow):
             tempe = self.hasilArray
             path = QFileDialog.getOpenFileName(self, f'Silahkan pilih file data prediksi!', '', "XLSX files (*.xlsx)")
             namafile = path[0]
-            data = pd.read_excel(namafile, header=1)
+            data = pd.read_excel(namafile, header=0)
             dataA = np.array(data) # simpan data kedalam bentuk list/array
             dataPre = np.around(dataA,2)
             if tempe[0,0] != 0 :
@@ -2153,8 +2287,8 @@ class FormPrediksi(QMainWindow):
                 self.bacaData()
             self.statData = 1
         except:
-            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
-
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()[1]}')
+            
     def hapusSemuaData(self):
         try:
             msg = QMessageBox()
@@ -2173,9 +2307,15 @@ class FormPrediksi(QMainWindow):
                 for i in range(19):
                     kosong[0,i] = 0
                 self.hasilArray = kosong
-                print(self.hasilArray)
                 self.sgui.tbDataPre.setRowCount(0)
                 self.sgui.tbPrediksi.setRowCount(0)
+                self.ldatapred = 0
+                print(self.ldatapred)
+                self.statData = 0
+                self.sgui.leNim.setText("")
+                self.sgui.leWaktu.setText("")
+                self.sgui.leJml.setText("")
+                print("Berhasil menghapus semua data")
             else:
                 print("Tidak Jadi Menghapus Semua Data")
         except:
@@ -2229,7 +2369,6 @@ class FormPrediksi(QMainWindow):
         return data_normalisasi
 
     def mulaiPrediksi(self):
-        
         try:
             # mengambil variabel parrent
             statData = self.statData
@@ -2282,7 +2421,6 @@ class FormPrediksi(QMainWindow):
                     aldalatih = cur.fetchall()
                     cur.close()
                     data_latih = np.array(aldalatih)
-                    #print(data_latih)
                     dataipk = data_latih[:,19]
                     datamax = max(dataipk)
                     datamin = min(dataipk)
@@ -2299,6 +2437,8 @@ class FormPrediksi(QMainWindow):
                     hasil_prediksi = np.zeros((totalDataPrediksi, 1))
                     hslprediksi_denormalisasi = np.zeros((totalDataPrediksi,1))
 
+                    time_start = time.perf_counter() # memulai waktu proses
+
                     # melakukan proses feedforward atau prediksi
                     for j in range(totalDataPrediksi):
                         [z, y] = self.jst.Feedforward(dataUji_normalisasi[j,:], v, w, n_hidden, n_output)
@@ -2309,15 +2449,29 @@ class FormPrediksi(QMainWindow):
                         hslprediksi_denormalisasi[i,0] = self.tra.Denormalisasi(hasil_prediksi[i,0], datamin, datamax)
                     
                     responsi = self.responsi(dataPrediksi, hslprediksi_denormalisasi)
-                    self.sgui.tbPrediksi.setRowCount(totalDataPrediksi)
-                    for i in range(totalDataPrediksi):
-                        hasiljst = hslprediksi_denormalisasi[i,0]
 
-                        # menampilkan hasil ke dalam tabel
-                        self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(dataPrediksi[i,0]))))
-                        self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(hasiljst, 2))))
-                        self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(responsi[i])))
+                    time_stop = round((time.perf_counter() - time_start),2)
+
+                    dateObj = datetime.now()
+                    dateStr = dateObj.strftime("%b%d%Y%H%M%S%f")
+                    tabelrdpre = "tb_prediksi" + dateStr
+                    print(tabelrdpre)
+                    cur = self.madb.cursor()
+                    cur.execute(f"CREATE TABLE {tabelrdpre} (NIM INT(11), ipk FLOAT, responsi TEXT)")
+
+                    # proses menyimpan data hasil prediksi sementara ke server database
+                    for i in range(totalDataPrediksi):
+                        cur = self.madb.cursor()
+                        cur.execute(f"INSERT INTO {tabelrdpre} (NIM, ipk, responsi) VALUES ({dataPrediksi[i,0]}, {hslprediksi_denormalisasi[i,0]}, '{responsi[i]}')")
+                        self.madb.commit()
+                        cur.close()
+                    
+                    self.bacaDataPred(totalDataPrediksi, tabelrdpre)
+
+                    self.sgui.leWaktu.setText(str(f"{time_stop} detik"))
+                    self.sgui.leJml.setText(str(totalDataPrediksi))
                     self.statData = 2
+
                 self.madb.close()
             else:
                 # menampilkan pesan error
@@ -2329,12 +2483,117 @@ class FormPrediksi(QMainWindow):
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
 
+    def bacaDataPred(self, totalDataPrediksi, tabelrdpre):
+        try:
+            kontrolDB.konek(self)
+            cur = self.madb.cursor()
+            cur.execute(f"SELECT * FROM {tabelrdpre}")
+            alda = cur.fetchall()
+            cur.close()
+            data_pred = np.array(alda) # simpan data kedalam bentuk list/array
+            self.ldatapred = data_pred
+            n_data_pred = len(data_pred)
+
+            self.sgui.tbPrediksi.setRowCount(totalDataPrediksi)
+            for i in range(totalDataPrediksi):
+                # menampilkan hasil ke dalam tabel
+                self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(data_pred[i,0]))))
+                self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(float(data_pred[i,1]),2))))
+                self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(data_pred[i,2])))
+                
+            cur = self.madb.cursor()
+            cur.execute(f"DROP TABLE {tabelrdpre}")
+            cur.close()
+            self.madb.close()
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def cariDataPred(self):
+        try:
+            statData = self.statData
+            if statData == 2 :
+                carinim = self.sgui.leNim.text()
+                ldatapred = self.ldatapred
+                banyakdata = len(ldatapred)
+                if carinim != "":
+                    dateObj = datetime.now()
+                    dateStr = dateObj.strftime("%b%d%Y%H%M%S%f")
+                    tabelrd = "tb_z" + dateStr
+                    print(tabelrd)
+                    
+                    kontrolDB.konek(self)
+                    cur = self.madb.cursor()
+                    cur.execute(f"CREATE TABLE {tabelrd} (NIM INT(11), ipk FLOAT, responsi TEXT)")
+                    for i in range(banyakdata):
+                        cur.execute(f"INSERT INTO {tabelrd} (NIM, ipk, responsi) VALUES ({ldatapred[i,0]}, {ldatapred[i,1]}, '{ldatapred[i,2]}')")
+                        self.madb.commit()
+                    cur.close()
+
+                    cur = self.madb.cursor()
+                    cur.execute(f"SELECT * FROM {tabelrd} WHERE NIM LIKE '%{carinim}%'")
+                    alda = cur.fetchall()
+                    cur.close()
+                    data_fil = np.array(alda) # simpan data kedalam bentuk list/array
+                    n_data_fil = len(data_fil)
+
+                    if n_data_fil != 0:
+                        self.sgui.tbPrediksi.setRowCount(n_data_fil)
+                        for i in range(n_data_fil):
+                            # menampilkan hasil ke dalam tabel
+                            self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(data_fil[i,0]))))
+                            self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(float(data_fil[i,1]),2))))
+                            self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(data_fil[i,2])))
+                    else:
+                        # menampilkan pesan error
+                        msg = QMessageBox()
+                        msg.setWindowTitle("Proses Dibatalkan !")
+                        msg.setText("NIM yang dicari tidak ada!")
+                        msg.setIcon(QMessageBox.Warning)
+                        x = msg.exec_()
+
+                    cur = self.madb.cursor()
+                    cur.execute(f"DROP TABLE {tabelrd}")
+                    cur.close()
+                    self.madb.close()
+            else:
+                # menampilkan pesan error
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalkan !")
+                msg.setText("Lakukan Proses Prediksi Terlebih Dahulu!")
+                msg.setIcon(QMessageBox.Warning)
+                x = msg.exec_()
+        except:
+            print(f'Terjadi kesalahan pada proses pencarian data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def resetData(self):
+        try:
+            statData = self.statData
+            self.sgui.leNim.setText(str(""))
+            if statData == 2 :
+                self.sgui.leNim.setText(str(""))
+                data_pred = self.ldatapred
+                n_data_pred = len(data_pred)
+
+                self.sgui.tbPrediksi.setRowCount(n_data_pred)
+                for i in range(n_data_pred):
+                    # menampilkan hasil ke dalam tabel
+                    self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(data_pred[i,0]))))
+                    self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(float(data_pred[i,1]),2))))
+                    self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(data_pred[i,2])))
+            else:
+                # menampilkan pesan error
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalkan !")
+                msg.setText("Lakukan Proses Prediksi Terlebih Dahulu!")
+                msg.setIcon(QMessageBox.Warning)
+                x = msg.exec_()
+        except:
+            print(f'Terjadi kesalahan pada proses pencarian data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
     def responsi(self, dataPrediksi, hslprediksi_denormalisasi):
         try:
             badata = len(dataPrediksi)
-            print(badata)
             bapred = len(hslprediksi_denormalisasi)
-            print(bapred)
             responsi = []
             for i in range(badata):
                 rresp = "Berdasarkan hasil prediksi, "
@@ -2358,40 +2617,34 @@ class FormPrediksi(QMainWindow):
                 x18 = dataPrediksi[i,18]
                 preIPK = hslprediksi_denormalisasi[i,0]
                 if preIPK >= 2.75 :
-                    if x1 >= 2.75 and x2 >= 2.75 and x3 >= 2.75 and x4 >= 2.75 :
+                    if x1 >= 2.75 or x2 >= 2.75 or x3 >= 2.75 or x4 >= 2.75 :
                         if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
-                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk mengulang matakuliah "
+                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk memperbaiki matakuliah "
                             rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
                             rresp += rresp2
                             rresp2 = ""
-                            #print(rresp)
                         else:
                             rresp += "mahasiswa tidak mengalami masalah akademik."
-                            #print(rresp)
                     else:
                         if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
-                            rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk mengulang matakuliah "
+                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk memperbaiki matakuliah "
                             rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
                             rresp += rresp2
                             rresp2 = ""
-                            #print(rresp)
                         else:
-                            rresp += "mahasiswa sedikit mengalami masalah akademik."
-                            #print(rresp)
+                            rresp += "mahasiswa tidak mengalami masalah akademik."
                 else:
                     if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
                         rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk mengulang matakuliah "
                         rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
                         rresp += rresp2
                         rresp2 = ""
-                        #print(rresp)
                     else:
-                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk memperbaiki nilai matkuliah yang dirasa kurang."
-                        #print(rresp)
+                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk memperbaiki nilai matakuliah-matakuliah yang kurang."
                         
                 responsi.append(rresp)
                 rresp = ""
-            print(responsi[18])
+            print("Berhasil Prediksi")
             return responsi
         except:
             print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
@@ -2501,6 +2754,756 @@ class FormPrediksi(QMainWindow):
     def Kembali(self):
         self.tampilForm = FormMain()
         self.close()
+
+class FormPrediksiDB(QMainWindow):
+    
+    # menciptakan objek dari kelas JST
+    jst = JaringanSyarafTiruan()
+    pre = DPreparation()
+    tra = DTransformation()
+
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.sgui = gui_prediksi_db.Ui_MainWindow()
+        self.sgui.setupUi(self)
+        self.setWindowTitle("(JST BACKPROPAGATION) Prediksi IPK Mahasiswa Sistem Komputer S1 - Menu Prediksi Data Akademik Dari Database")
+        kontrolDB.konek(self) #panggil fungsi koneksi server
+
+        #setup status bar
+        self.sgui.statusbarr = QStatusBar()
+        self.setStatusBar(self.sgui.statusbarr)
+        self.sgui.statusbarr.setStyleSheet('background-color: #FFFFFF;')
+        self.sgui.lstatus = QLabel()
+        self.sgui.lstatus.setText(self.statSer)
+        self.sgui.statusbarr.addWidget(self.sgui.lstatus)
+
+        np.set_printoptions(suppress=True, linewidth=np.inf)
+        self.bentukAwal = np.zeros((1,19))
+        self.hasilArray = self.bentukAwal
+        self.bacaDataDB()
+        self.rngtabelPilih()
+        self.rngtabelPrediksi()
+
+        self.sgui.tbDataDB.cellClicked.connect(self.pilihDataDB)
+        self.sgui.tbDataPil.cellClicked.connect(self.pilihDataPil)
+
+        self.sgui.pbPilih.clicked.connect(self.selData)
+        self.sgui.pbPilihAll.clicked.connect(self.selDataAll)
+        self.sgui.pbHapus.clicked.connect(self.hapusData)
+        self.sgui.pbHapusAll.clicked.connect(self.hapusDataAll)
+        self.sgui.pbProPre.clicked.connect(self.prosesPrediksiDB)
+        self.sgui.pbCari.clicked.connect(self.cariDataPred)
+        self.sgui.pbReset.clicked.connect(self.resetData)
+        self.sgui.pbCari2.clicked.connect(self.cariDataPred2)
+        self.sgui.pbReset2.clicked.connect(self.resetData2)
+        self.sgui.pbKembali.clicked.connect(self.Kembali)
+
+        self.kembali = 0
+        self.statData = 0
+        self.selNIM = 0
+        self.selNIMPil = 0
+        self.show()
+    
+    def rngtabelPilih(self):
+        try:
+            dateObj = datetime.now()
+            dateStr = dateObj.strftime("%b%d%Y%H%M%S%f")
+            tabelrd = "tb_Pil" + dateStr
+            print(tabelrd)
+
+            cur = self.madb.cursor()
+            cur.execute(f"CREATE TABLE {tabelrd} (NIM INT(8) PRIMARY KEY, x1 FLOAT, x2 FLOAT, x3 FLOAT, x4 FLOAT, x5 INT(1), x6 INT(1), x7 INT(1), x8 INT(1), x9 INT(1), x10 INT(1), x11 INT(1), x12 INT(1), x13 INT(1), x14 INT(1), x15 INT(1), x16 INT(1), x17 INT(1), x18 INT(1))")
+            cur.close()
+
+            self.tabelPilih = tabelrd
+        except:
+            print(f'Terjadi kesalahan pada proses baca data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+    
+    def rngtabelPrediksi(self):
+        try:
+            dateObj = datetime.now()
+            dateStr = dateObj.strftime("%b%d%Y%H%M%S%f")
+            tabelrd = "tb_PredPil" + dateStr
+            print(tabelrd)
+
+            cur = self.madb.cursor()
+            cur.execute(f"CREATE TABLE {tabelrd} (NIM INT(11), ipk FLOAT, responsi TEXT)")
+            cur.close()
+
+            self.tabelPrediksi = tabelrd
+        except:
+            print(f'Terjadi kesalahan pada proses baca data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def bacaDataDB(self):
+        try:
+            # membaca data latih dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_prediksi")
+            alda = cur.fetchall()
+            cur.close()
+            data_prediksi = np.array(alda) # simpan data kedalam bentuk list/array
+            self.ldatapred = data_prediksi
+            n_dataprediksi = len(data_prediksi)
+
+            # menampilkan data latih pada tabel
+            self.sgui.tbDataDB.setRowCount(0)
+            self.sgui.tbDataDB.setRowCount(n_dataprediksi)
+            self.sgui.leJml_2.setText(str(n_dataprediksi))
+            for i in range(n_dataprediksi):
+                self.sgui.tbDataDB.setItem(i,0,QTableWidgetItem(str(int(data_prediksi[i,0])))) # membaca parameter NIM
+                for j in range(4):
+                    k = j + 1
+                    self.sgui.tbDataDB.setItem(i,k,QTableWidgetItem(str(data_prediksi[i,k]))) # membaca paramater input latih x1-x18
+                for l in range(4, 18):
+                    k = l + 1
+                    self.sgui.tbDataDB.setItem(i,k,QTableWidgetItem(str(int(data_prediksi[i,k])))) # membaca paramater input latih x1-x18
+
+        except:
+            print(f'Terjadi kesalahan pada proses baca data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def bacaDataPilih(self):
+        try:
+            tabelrd = self.tabelPilih
+            
+            cur = self.madb.cursor()
+            cur.execute(f"SELECT NIM FROM {tabelrd}")
+            alda = cur.fetchall()
+            cur.close()
+            data_sel = np.array(alda) # simpan data kedalam bentuk list/array
+            n_datasel = len(data_sel)
+
+            self.sgui.tbDataPil.setRowCount(n_datasel)
+            self.sgui.laJmlPil.setText(str(n_datasel))
+            for i in range(n_datasel):
+                # menampilkan hasil ke dalam tabel
+                self.sgui.tbDataPil.setItem(i,0,QTableWidgetItem(str(int(data_sel[i,0]))))
+        except:
+            print(f'Terjadi kesalahan pada proses pilih data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+    
+    def bacaDataPrediksi(self, totalDataPrediksi, tabelrdprediksi):
+        try:
+            cur = self.madb.cursor()
+            cur.execute(f"SELECT * FROM {tabelrdprediksi}")
+            alda = cur.fetchall()
+            cur.close()
+            data_pred = np.array(alda) # simpan data kedalam bentuk list/array
+            self.ldatapred2 = data_pred
+            n_data_pred = len(data_pred)
+
+            self.sgui.tbPrediksi.setRowCount(totalDataPrediksi)
+            for i in range(totalDataPrediksi):
+                # menampilkan hasil ke dalam tabel
+                self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(data_pred[i,0]))))
+                self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(float(data_pred[i,1]),2))))
+                self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(data_pred[i,2])))
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def pilihDataDB(self, row, column):
+        try:
+            item = self.sgui.tbDataDB.item(row, 0)
+            self.ID = item.text()
+            print(f"Baris {row} dan kolom {column} dipilih tabelDB, NIM: {self.ID}")
+
+            items = np.zeros((19,1))
+            for i in range(19):
+                item = self.sgui.tbDataDB.item(row, i)
+                items[i,0] = item.text()
+                
+            self.selNIM = int(items[0,0])
+            self.selX1 = float(items[1,0])
+            self.selX2 = float(items[2,0])
+            self.selX3 = float(items[3,0])
+            self.selX4 = float(items[4,0])
+            self.selX5 = int(items[5,0])
+            self.selX6 = int(items[6,0])
+            self.selX7 = int(items[7,0])
+            self.selX8 = int(items[8,0])
+            self.selX9 = int(items[9,0])
+            self.selX10 = int(items[10,0])
+            self.selX11 = int(items[11,0])
+            self.selX12 = int(items[12,0])
+            self.selX13 = int(items[13,0])
+            self.selX14 = int(items[14,0])
+            self.selX15 = int(items[15,0])
+            self.selX16 = int(items[16,0])
+            self.selX17 = int(items[17,0])
+            self.selX18 = int(items[18,0])
+        except:
+            print(f'Terjadi kesalahan pada proses pilih data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+    
+    def pilihDataPil(self, row, column):
+        try:
+            item = self.sgui.tbDataPil.item(row, 0)
+            self.ID = item.text()
+            print(f"Baris {row} dan kolom {column} dipilih tabelPilih, NIM: {self.ID}")
+
+            items = np.zeros((1,1))
+            for i in range(1):
+                item = self.sgui.tbDataPil.item(row, i)
+                items[i,0] = item.text()
+                
+            self.selNIMPil = int(items[0,0])
+        except:
+            print(f'Terjadi kesalahan pada proses pilih data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def selData(self):
+        try:
+            selNIM = self.selNIM
+            selX1 = self.selX1
+            selX2 = self.selX2
+            selX3 = self.selX3
+            selX4 = self.selX4
+            selX5 = self.selX5
+            selX6 = self.selX6
+            selX7 = self.selX7
+            selX8 = self.selX8
+            selX9 = self.selX9
+            selX10 = self.selX10
+            selX11 = self.selX11
+            selX12 = self.selX12
+            selX13 = self.selX13
+            selX14 = self.selX14
+            selX15 = self.selX15
+            selX16 = self.selX16
+            selX17 = self.selX17
+            selX18 = self.selX18
+            tabelrd = self.tabelPilih
+
+            if selNIM != 0:
+                cur = self.madb.cursor()
+                cur.execute(f"SELECT NIM FROM {tabelrd} WHERE NIM = {selNIM}")
+                alda = cur.fetchall()
+                nimada = len(alda)
+                cur.close()
+                if nimada == 0:
+                    cur = self.madb.cursor()
+                    cur.execute(f"INSERT INTO {tabelrd} (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18) VALUES ({selNIM}, {selX1}, {selX2}, {selX3}, {selX4}, {selX5}, {selX6}, {selX7}, {selX8}, {selX9}, {selX10}, {selX11}, {selX12}, {selX13}, {selX14}, {selX15}, {selX16}, {selX17}, {selX18})")
+                    self.madb.commit()
+                    cur.close()
+                    print("Berhasil memilih",selNIM)
+                else:
+                    print("Data NIM Sudah Teripilih")
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Proses Dibatalakan!")
+                    msg.setText("Proses pilih data NIM dibatalkan! karena data NIM sudah terpilih")
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.exec_()
+            else:
+                print("Data NIM Belum Dipilih")
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses pilih data NIM dibatalkan! karena data NIM belum dipilih")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+            
+            self.bacaDataPilih()
+            
+            self.statData = 1;
+        except:
+            print(f'Terjadi kesalahan pada proses pilih data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def selDataAll(self):
+        try:
+            tabelrd = self.tabelPilih
+            self.hapusDataAll()
+            # membaca data latih dari database
+            np.set_printoptions(suppress=True, linewidth=np.inf)
+            cur = self.madb.cursor()
+            cur.execute("SELECT * FROM data_prediksi")
+            alda = cur.fetchall()
+            cur.close()
+            data_pilihall = np.array(alda) # simpan data kedalam bentuk list/array
+            data_pilihall = np.delete(data_pilihall, (19), axis=1)
+            n_data_pilihall = len(data_pilihall)
+            data_pilihall = data_pilihall.tolist()
+
+            cur = self.madb.cursor()
+            sql = f"INSERT INTO {tabelrd}"+" (NIM, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            cur.executemany(sql, data_pilihall)
+            self.madb.commit()
+            cur.close()
+
+            self.bacaDataPilih()
+            self.statData = 1;
+        except:
+            print(f'Terjadi kesalahan pada proses pilih data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def hapusData(self):
+        try:
+            tabelrd = self.tabelPilih
+            selNIMPil = self.selNIMPil
+
+            if selNIMPil != 0:
+                cur = self.madb.cursor()
+                cur.execute(f"DELETE FROM {tabelrd} WHERE NIM = {selNIMPil}")
+                self.madb.commit()
+                cur.close()
+            else:
+                print("Data NIM Belum Dipilih")
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses hapus data NIM dibatalkan! karena data NIM belum dipilih")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+            
+            self.bacaDataPilih()
+        except:
+            print(f'Terjadi kesalahan pada proses hapus data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def hapusDataAll(self):
+        try:
+            tabelrd = self.tabelPilih
+            cur = self.madb.cursor()
+            cur.execute(f"TRUNCATE TABLE {tabelrd}")
+            cur.close()
+
+            self.bacaDataPilih()
+        except:
+            print(f'Terjadi kesalahan pada proses hapus data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def Pronor(self, data):
+        # mengakses data berdasarkan kolom/parameter
+        key = data[:, 0]
+        x1  = data[:, 1]
+        x2  = data[:, 2]
+        x3  = data[:, 3]
+        x4  = data[:, 4]
+        x5  = data[:, 5]
+        x6  = data[:, 6]
+        x7  = data[:, 7]
+        x8  = data[:, 8]
+        x9  = data[:, 9]
+        x10 = data[:, 10]
+        x11 = data[:, 11]
+        x12 = data[:, 12]
+        x13 = data[:, 13]
+        x14 = data[:, 14]
+        x15 = data[:, 15]
+        x16 = data[:, 16]
+        x17 = data[:, 17]
+        x18 = data[:, 18]
+
+        # normalisasi data menggunakan fungsi Normalisasi kelas JST
+        x1  = self.tra.Normalisasi(x1)
+        x2  = self.tra.Normalisasi(x2)
+        x3  = self.tra.Normalisasi(x3)
+        x4  = self.tra.Normalisasi(x4)
+        x5  = self.tra.Normalisasi(x5)
+        x6  = self.tra.Normalisasi(x6)
+        x7  = self.tra.Normalisasi(x7)
+        x8  = self.tra.Normalisasi(x8)
+        x9  = self.tra.Normalisasi(x9)
+        x10 = self.tra.Normalisasi(x10)
+        x11 = self.tra.Normalisasi(x11)
+        x12 = self.tra.Normalisasi(x12)
+        x13 = self.tra.Normalisasi(x13)
+        x14 = self.tra.Normalisasi(x14)
+        x15 = self.tra.Normalisasi(x15)
+        x16 = self.tra.Normalisasi(x16)
+        x17 = self.tra.Normalisasi(x17)
+        x18 = self.tra.Normalisasi(x18)
+
+        # menggabungkan data-data normalisasi menjadi dataset
+        data_normalisasi = np.concatenate((x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18), axis=1)
+                
+        return data_normalisasi
+
+    def prosesPrediksiDB(self):
+        try:
+            tabelrd = self.tabelPilih
+            tabelrdprediksi = self.tabelPrediksi
+
+            cur = self.madb.cursor()
+            cur.execute(f"SELECT * FROM {tabelrd}")
+            alda = cur.fetchall()
+            datapil = np.array(alda)
+            jmldatapil = len(alda)
+            cur.close()
+
+            if jmldatapil != 0:
+                cur = self.madb.cursor()
+                cur.execute("SELECT n1 FROM tb_bobotv")
+                biasv = cur.fetchall()
+                cur.close()
+                lbiasv = len(biasv)
+                cur = self.madb.cursor()
+                cur.execute("SELECT n1 FROM tb_bobotw")
+                biasw = cur.fetchall()
+                cur.close()
+                lbiasw = len(biasw)
+                if lbiasv == 0 and lbiasw == 0 :
+                    biasv = ""
+                    biasw = ""
+                    # menampilkan pesan error
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Proses Dibatalkan")
+                    msg.setText("Bobot di database kosong!")
+                    msg.setIcon(QMessageBox.Warning)
+                    x = msg.exec_()
+                else:
+                    cur = self.madb.cursor()
+                    cur.execute(f"TRUNCATE TABLE {tabelrdprediksi}")
+                    cur.close()
+                    cur = self.madb.cursor()
+                    cur.execute("SELECT ninput, nhidden, noutput FROM tb_params WHERE id = '1'")
+                    prm = cur.fetchall()
+                    cur.close()
+                    n_input = prm[0][0]
+                    n_hidden = prm[0][1]
+                    n_output = prm[0][2]
+                    
+                    cur = self.madb.cursor()
+                    cur.execute("SELECT * FROM tb_bobotv")
+                    aldav = cur.fetchall()
+                    cur.close()
+                    v = np.array(aldav)
+
+                    cur = self.madb.cursor()
+                    cur.execute("SELECT * FROM tb_bobotw")
+                    aldaw = cur.fetchall()
+                    cur.close()
+                    w = np.array(aldaw)
+
+                    cur = self.madb.cursor()
+                    cur.execute("SELECT * FROM data_latih")
+                    aldalatih = cur.fetchall()
+                    cur.close()
+                    data_latih = np.array(aldalatih)
+                    dataipk = data_latih[:,19]
+                    datamax = max(dataipk)
+                    datamin = min(dataipk)
+                    data_latih = np.delete(data_latih, (19), axis=1)
+                    badalatih = len(data_latih)
+                    dataGabung = np.concatenate((data_latih, datapil))
+
+                    totalDataPrediksi = len(datapil)
+                    
+                    dataGabung_normalisasi = self.Pronor(dataGabung)
+                    dataUji_normalisasi = dataGabung_normalisasi[badalatih:,:]
+
+                    # memetakan array/matriks/list
+                    hasil_prediksi = np.zeros((totalDataPrediksi, 1))
+                    hslprediksi_denormalisasi = np.zeros((totalDataPrediksi,1))
+
+                    time_start = time.perf_counter() # memulai waktu proses
+
+                    # melakukan proses feedforward atau prediksi
+                    for j in range(totalDataPrediksi):
+                        [z, y] = self.jst.Feedforward(dataUji_normalisasi[j,:], v, w, n_hidden, n_output)
+                        hasil_prediksi[j,0] = y[0,0]
+                    
+                    # proses denormalisasi
+                    for i in range(totalDataPrediksi):
+                        hslprediksi_denormalisasi[i,0] = self.tra.Denormalisasi(hasil_prediksi[i,0], datamin, datamax)
+
+                    responsi = self.responsi(datapil, hslprediksi_denormalisasi)
+
+                    # proses menyimpan data hasil prediksi sementara ke server database
+                    for i in range(totalDataPrediksi):
+                        cur = self.madb.cursor()
+                        cur.execute(f"INSERT INTO {tabelrdprediksi} (NIM, ipk, responsi) VALUES ({datapil[i,0]}, {hslprediksi_denormalisasi[i,0]}, '{responsi[i]}')")
+                        self.madb.commit()
+                        cur.close()
+                    
+                    self.bacaDataPrediksi(totalDataPrediksi, tabelrdprediksi)
+                    time_stop = round((time.perf_counter() - time_start),2)
+
+                    self.sgui.leWaktu.setText(str(f"{time_stop} detik"))
+                    self.sgui.leJml2.setText(str(totalDataPrediksi))
+                    self.ttlDataPred = totalDataPrediksi
+                    self.statData = 2
+            else:
+                print("Belum Memilih Data NIM")
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalakan!")
+                msg.setText("Proses prediksi IPK dibatalkan! karena belum memilih data NIM yang akan diprediksi.")
+                msg.setIcon(QMessageBox.Critical)
+                msg.exec_()
+        except:
+            print(f'Terjadi kesalahan pada proses prediksi data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def responsi(self, dataPrediksi, hslprediksi_denormalisasi):
+        try:
+            badata = len(dataPrediksi)
+            bapred = len(hslprediksi_denormalisasi)
+            responsi = []
+            for i in range(badata):
+                rresp = "Berdasarkan hasil prediksi, "
+                x1 = dataPrediksi[i,1]
+                x2 = dataPrediksi[i,2]
+                x3 = dataPrediksi[i,3]
+                x4 = dataPrediksi[i,4]
+                x5 = dataPrediksi[i,5]
+                x6 = dataPrediksi[i,6]
+                x7 = dataPrediksi[i,7]
+                x8 = dataPrediksi[i,8]
+                x9 = dataPrediksi[i,9]
+                x10 = dataPrediksi[i,10]
+                x11 = dataPrediksi[i,11]
+                x12 = dataPrediksi[i,12]
+                x13 = dataPrediksi[i,13]
+                x14 = dataPrediksi[i,14]
+                x15 = dataPrediksi[i,15]
+                x16 = dataPrediksi[i,16]
+                x17 = dataPrediksi[i,17]
+                x18 = dataPrediksi[i,18]
+                preIPK = hslprediksi_denormalisasi[i,0]
+                if preIPK >= 2.75 :
+                    if x1 >= 2.75 or x2 >= 2.75 or x3 >= 2.75 or x4 >= 2.75 :
+                        if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk memperbaiki matakuliah "
+                            rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                            rresp += rresp2
+                            rresp2 = ""
+                        else:
+                            rresp += "mahasiswa tidak mengalami masalah akademik."
+                    else:
+                        if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                            rresp += "mahasiswa mengalami sedikit masalah akademik dan diharuskan untuk memperbaiki matakuliah "
+                            rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                            rresp += rresp2
+                            rresp2 = ""
+                        else:
+                            rresp += "mahasiswa tidak mengalami masalah akademik."
+                else:
+                    if x5 <= 1 or x6 <= 1 or x7 <= 1 or x8 <= 1 or x9 <= 1 or x10 <= 1 or x11 <= 1 or x12 <= 1 or x13 <= 1 or x14 <= 1 or x15 <= 1 or x16 <= 1 or x17 <= 1 or x18 <= 1 :
+                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk mengulang matakuliah "
+                        rresp2 = self.listResp(x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18)
+                        rresp += rresp2
+                        rresp2 = ""
+                    else:
+                        rresp += "mahasiswa mengalami masalah akademik dan diharuskan untuk memperbaiki nilai matakuliah-matakuliah yang kurang."
+                        
+                responsi.append(rresp)
+                rresp = ""
+            print("Berhasil Prediksi")
+            return responsi
+        except:
+            print(f'Terjadi kesalahan pada proses pembacaan data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def listResp(self, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18):
+        rresp = ""
+        statt = 0
+        if x5 <= 1 :
+            rresp += "Fisika 1"
+            statt = 1
+        if x6 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika 1"
+                statt = 1
+            else:
+                rresp += "Matematika 1"
+                statt = 1
+        if x7 <= 1 :
+            if statt == 1:
+                rresp += ", Fisika 2"
+                statt = 1
+            else:
+                rresp += "Fisika 2"
+                statt = 1
+        if x8 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika 2"
+                statt = 1
+            else:
+                rresp += "Matematika 2"
+                statt = 1
+        if x9 <= 1 :
+            if statt == 1:
+                rresp += ", Algoritma Pemograman"
+                statt = 1
+            else:
+                rresp += "Algoritma Pemograman"
+                statt = 1
+        if x10 <= 1 :
+            if statt == 1:
+                rresp += ", Elektronika 1"
+                statt = 1
+            else:
+                rresp += "Elektronika 1"
+                statt = 1
+        if x11 <= 1 :
+            if statt == 1:
+                rresp += ", Teori Sistem & Sinyal"
+                statt = 1
+            else:
+                rresp += "Teori Sistem & Sinyal"
+                statt = 1
+        if x12 <= 1 :
+            if statt == 1:
+                rresp += ", Organisasi & Arsitektur Komputer 1"
+                statt = 1
+            else:
+                rresp += "Organisasi & Arsitektur Komputer 1"
+                statt = 1
+        if x13 <= 1 :
+            if statt == 1:
+                rresp += ", Sistem Digital"
+                statt = 1
+            else:
+                rresp += "Sistem Digital"
+                statt = 1
+        if x14 <= 1 :
+            if statt == 1:
+                rresp += ", Elektronika 2"
+                statt = 1
+            else:
+                rresp += "Elektronika 2"
+                statt = 1
+        if x15 <= 1 :
+            if statt == 1:
+                rresp += ", Struktur Data"
+                statt = 1
+            else:
+                rresp += "Struktur Data"
+                statt = 1
+        if x16 <= 1 :
+            if statt == 1:
+                rresp += ", Matematika Diskrit"
+                statt = 1
+            else:
+                rresp += "Matematika Diskrit"
+                statt = 1
+        if x17 <= 1 :
+            if statt == 1:
+                rresp += ", Komunikasi Data"
+                statt = 1
+            else:
+                rresp += "Komunikasi Data"
+                statt = 1
+        if x18 <= 1 :
+            if statt == 1:
+                rresp += ", Aljabar Linear"
+            else:
+                rresp += "Aljabar Linear"
+        rresp += "."
+        return rresp
+
+    def cariDataPred(self):
+        try:
+            cariNIM = self.sgui.leNim.text()
+            ldatapred = self.ldatapred
+            banyakdata = len(ldatapred)
+            if cariNIM != "":
+                cur = self.madb.cursor()
+                cur.execute(f"SELECT * FROM data_prediksi WHERE NIM LIKE '%{cariNIM}%'")
+                alda = cur.fetchall()
+                cur.close()
+                data_fil = np.array(alda) # simpan data kedalam bentuk list/array
+                n_data_fil = len(data_fil)
+
+                if n_data_fil != 0:
+                    self.sgui.tbDataDB.setRowCount(0)
+                    self.sgui.tbDataDB.setRowCount(n_data_fil)
+                    self.sgui.leJml_2.setText(str(n_data_fil))
+                    for i in range(n_data_fil):
+                        self.sgui.tbDataDB.setItem(i,0,QTableWidgetItem(str(int(data_fil[i,0])))) # membaca parameter NIM
+                        for j in range(4):
+                            k = j + 1
+                            self.sgui.tbDataDB.setItem(i,k,QTableWidgetItem(str(data_fil[i,k]))) # membaca paramater input latih x1-x18
+                        for l in range(4, 18):
+                            k = l + 1
+                            self.sgui.tbDataDB.setItem(i,k,QTableWidgetItem(str(int(data_fil[i,k])))) # membaca paramater input latih x1-x18
+                else:
+                    # menampilkan pesan error
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Proses Dibatalkan !")
+                    msg.setText("NIM yang dicari tidak ada!")
+                    msg.setIcon(QMessageBox.Warning)
+                    x = msg.exec_()
+            else:
+                self.bacaDataDB()
+        except:
+            print(f'Terjadi kesalahan pada proses cari data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def resetData(self):
+        try:
+            self.sgui.leNim.setText("")
+            self.bacaDataDB()
+        except:
+            print(f'Terjadi kesalahan pada proses reset data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def cariDataPred2(self):
+        try:
+            statData = self.statData
+            if statData == 2 :
+                tabelrdprediksi = self.tabelPrediksi
+                totalDataPrediksi = self.ttlDataPred
+                cariNIM = self.sgui.leNim2.text()
+                ldatapred = self.ldatapred2
+                banyakdata = len(ldatapred)
+                if cariNIM != "":
+                    cur = self.madb.cursor()
+                    cur.execute(f"SELECT * FROM {tabelrdprediksi} WHERE NIM LIKE '%{cariNIM}%'")
+                    alda = cur.fetchall()
+                    cur.close()
+                    data_fil = np.array(alda) # simpan data kedalam bentuk list/array
+                    n_data_fil = len(data_fil)
+
+                    if n_data_fil != 0:
+                        self.sgui.tbPrediksi.setRowCount(0)
+                        self.sgui.tbPrediksi.setRowCount(n_data_fil)
+                        self.sgui.leJml2.setText(str(n_data_fil))
+                        for i in range(n_data_fil):
+                            # menampilkan hasil ke dalam tabel
+                            self.sgui.tbPrediksi.setItem(i,0,QTableWidgetItem(str(int(data_fil[i,0]))))
+                            self.sgui.tbPrediksi.setItem(i,1,QTableWidgetItem(str(round(float(data_fil[i,1]),2))))
+                            self.sgui.tbPrediksi.setItem(i,2,QTableWidgetItem(str(data_fil[i,2])))
+                    else:
+                        # menampilkan pesan error
+                        msg = QMessageBox()
+                        msg.setWindowTitle("Proses Dibatalkan !")
+                        msg.setText("NIM yang dicari tidak ada!")
+                        msg.setIcon(QMessageBox.Warning)
+                        x = msg.exec_()
+                else:
+                    self.bacaDataPrediksi(totalDataPrediksi, tabelrdprediksi)
+            else:
+                # menampilkan pesan error
+                msg = QMessageBox()
+                msg.setWindowTitle("Proses Dibatalkan !")
+                msg.setText("Lakukan proses prediksi terlebih dahulu!")
+                msg.setIcon(QMessageBox.Warning)
+                x = msg.exec_()
+        except:
+            print(f'Terjadi kesalahan pada proses cari data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def resetData2(self):
+        try:
+            tabelrdprediksi = self.tabelPrediksi
+            totalDataPrediksi = self.ttlDataPred
+            self.sgui.leNim2.setText("")
+            self.sgui.leJml2.setText(str(totalDataPrediksi))
+            self.bacaDataPrediksi(totalDataPrediksi, tabelrdprediksi)
+        except:
+            print(f'Terjadi kesalahan pada proses reset data baris-{sys.exc_info()[-1].tb_lineno}:\n{sys.exc_info()}')
+
+    def Kembali(self):
+        self.tampilForm = FormMain()
+        self.kembali = 1
+        self.close()
+
+    def closeEvent(self, event):
+        if self.kembali == 1 :
+            tabelrd = self.tabelPilih
+            tabelrd2 = self.tabelPrediksi
+            cur = self.madb.cursor()
+            cur.execute(f"DROP TABLE {tabelrd}")
+            cur.execute(f"DROP TABLE {tabelrd2}")
+            cur.close()
+            self.madb.close()
+            print("Keluar dari menu")
+        else:
+            tabelrd = self.tabelPilih
+            tabelrd2 = self.tabelPrediksi
+            cur = self.madb.cursor()
+            cur.execute(f"DROP TABLE {tabelrd}")
+            cur.execute(f"DROP TABLE {tabelrd2}")
+            cur.close()
+            self.madb.close()
+            print("Aplikasi ditutup")
 
 # menjalankan program
 if __name__=="__main__":

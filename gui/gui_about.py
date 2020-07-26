@@ -12,8 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(674, 521)
+        MainWindow.setObjectName("About Me")
+        MainWindow.resize(674, 548)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/Main/logo_unikom_kuning.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"justify\"><span style=\" font-size:12pt; font-weight:600;\">About Me</span></p><p align=\"justify\"><span style=\" font-size:11pt;\">Sistem Prediksi Indeks Prestasi Kumulatif (IPK) Mahasiswa Program Studi Sistem Komputer Strata-1 (S1) Universitas Komputer Indonesia.</span></p><p align=\"justify\"><span style=\" font-size:11pt;\">Sistem Prediksi ini dirancang menggunakan algoritma Jaringan Syaraf Tiruan (Artificial Neural Network) dengan metode Backpropagation. Sistem ini bertujuan sebagai bahan pendukung pihak dosen dalam pemantauan kinerja mahasiswa. Sistem ini dibuat untuk memenuhi syarat kelulusan sebagai Sarjana (S1) Sistem Komputer Universitas Komputer Indonesia.</span></p><p align=\"justify\"><span style=\" font-size:11pt;\">Terimakasih kepada Ibu Selvia Lorena Br Ginting, M.T. selaku dosen pembimbing dalam pembuatan sistem ini.</span></p></body></html>"))
-        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Dibuat Oleh:</span></p><p align=\"center\"><span style=\" font-size:11pt;\">Muhammad Aditya Fathur Rahman</span></p><p align=\"center\"><span style=\" font-size:11pt;\">10216044</span></p><p align=\"center\"><span style=\" font-size:11pt;\">E-mail: madityafr3@gmail.com</span></p><p align=\"center\"><span style=\" font-size:11pt;\">Phone: (+62) 085-797-971-090</span></p></body></html>"))
+        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Dibuat Oleh:</span></p><p align=\"center\"><span style=\" font-size:11pt;\">Muhammad Aditya Fathur Rahman (10216044)</span></p><p align=\"center\"><span style=\" font-size:11pt;\">E-mail: madityafr3@gmail.com</span></p><p align=\"center\"><span style=\" font-size:11pt;\">Phone: (+62) 085-797-971-090</span></p><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Dosen Pembimbing:</span></p><p align=\"center\"><span style=\" font-size:11pt;\">Selvia Lorena Br. Ginting, M.T. (4127.70.05.003)</span></p></body></html>"))
         self.pbOk.setText(_translate("MainWindow", "OK"))
 import gui.sourcesGambar_rc
 

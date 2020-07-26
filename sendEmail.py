@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 def kirimEmail(eemail, namaAdmin, idadmin, pswd):
     email = 'ipkbnn.donotreply@gmail.com'
     password = 'ipkPrediksi'
-    send_to_email = 'madityafr3@gmail.com'
+    send_to_email = eemail
     subject = 'Bantuan Id dan Password'
     messageHTML = f'<h2>Hallo admin {namaAdmin},</h2><p>Sistem aplikasi menerima permintaan untuk mengirimkan bantuan permasalahan <em>Login</em>.<br>Berikut ini merupakan Id dan Password akun aplikasi <strong>Prediksi IPK BNN Sistem Komputer UNIKOM.</strong></p><p style="margin-left: 40px;">Id : <strong>{idadmin}</strong><br>Password : <strong>{pswd}</strong></p><p>Jangan sebarkan pesan ini kepada orang lain!</p><hr><p>Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.</p>'
     messagePlain = 'wuubla  lublaa dub dub!!'
